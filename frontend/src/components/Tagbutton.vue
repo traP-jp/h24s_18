@@ -12,7 +12,7 @@ const navigateTo = (tag: string) => {
 </script>
 
 <template>
-  <button @click="navigateTo(tag)">{{ tag }}</button>
+  <button @click="navigateTo(tag)">#&nbsp;{{ tag }}</button>
 </template>
 
 <style></style>
