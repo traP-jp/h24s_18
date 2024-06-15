@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo/v4"
-	"github.com/traPtitech/go-traq"
 	traqoauth2 "github.com/traPtitech/go-traq-oauth2"
 	"golang.org/x/oauth2"
 	"net/http"
@@ -29,26 +28,10 @@ var (
 )
 
 func GetMeHandler(c echo.Context) error {
-	session, err := store.Get(c.Request(), sessionName)
+	user, _, err := getMe(c)
+
 	if err != nil {
-		return fmt.Errorf("failed to get session: %w", err)
-	}
-
-	token, ok := session.Values["token"].(*oauth2.Token)
-	if !ok {
-		return c.String(http.StatusBadRequest, "token is required")
-	}
-
-	traqConfig := traq.NewConfiguration()
-	traqConfig.HTTPClient = oauth2Config.Client(c.Request().Context(), token)
-	client := traq.NewAPIClient(traqConfig)
-
-	user, res, err := client.MeApi.GetMe(c.Request().Context()).Execute()
-	if err != nil {
-		return fmt.Errorf("failed to get me: %w", err)
-	}
-	if res.StatusCode != http.StatusOK {
-		return fmt.Errorf("failed to get me: %d", res.StatusCode)
+		return err
 	}
 
 	return c.JSON(http.StatusOK, fmt.Sprintf("Hello, %s!", user.Name))
@@ -120,6 +103,8 @@ func CallbackHandler(c echo.Context) error {
 	if err := session.Save(c.Request(), c.Response()); err != nil {
 		return fmt.Errorf("failed to save session: %w", err)
 	}
+
+	// Save data to database
 
 	return c.String(http.StatusOK, "success")
 }
