@@ -2,14 +2,16 @@ package main
 
 import (
 	"encoding/gob"
+
 	"golang.org/x/oauth2"
 	"net/http"
 
 	//"github.com/google/generative-ai-go/genai"
+	"os"
+
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/traP-jp/h24s_18/model"
-	"os"
 
 	"github.com/traP-jp/h24s_18/handler"
 	//"google.golang.org/api/option"
@@ -69,7 +71,8 @@ func main() {
 	e.GET("/api/oauth2/authorize", handler.AuthorizeHandler)
 	e.GET("/api/oauth2/callback", handler.CallbackHandler)
 	e.GET("/api/me", handler.GetMeHandler)
-	e.PATCH("/api/me", handler.PatchMe)
+	e.PATCH("/api/me",handler.PatchMe)
+  e.POST("/api/me/tags", handler.PostTag)
 
 	// Webサーバーをポート番号8080で起動し、エラーが発生した場合はログにエラーメッセージを出力する
 	e.Logger.Fatal(e.Start(":8080"))
