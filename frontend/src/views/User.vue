@@ -5,6 +5,7 @@ import SampleButton from "../components/SampleButton.vue";
 <template>
   <div>
     <h1>ユーザーページ</h1>
+    <h3>{{ $route.params.id }}</h3>
     <SampleButton />
   </div>
 </template>
