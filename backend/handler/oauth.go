@@ -2,6 +2,7 @@ package handler
 
 import (
 	"crypto/rand"
+	"errors"
 	"fmt"
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo/v4"
@@ -31,6 +32,9 @@ func GetMeHandler(c echo.Context) error {
 	user, _, err := getMe(c)
 
 	if err != nil {
+		if errors.Is(err, errUnauthorized) {
+			return c.String(http.StatusUnauthorized, "unauthorized")
+		}
 		return err
 	}
 

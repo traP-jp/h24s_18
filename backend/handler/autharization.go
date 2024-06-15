@@ -5,7 +5,6 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/traPtitech/go-traq"
 	"golang.org/x/oauth2"
-	"net/http"
 )
 
 var (
@@ -20,7 +19,8 @@ func getMe(c echo.Context) (*traq.MyUserDetail, *traq.APIClient, error) {
 
 	token, ok := session.Values["token"].(*oauth2.Token)
 	if !ok {
-		return nil, nil, c.String(http.StatusBadRequest, "token is required")
+		fmt.Println("token is required")
+		return nil, nil, errUnauthorized
 	}
 
 	ctx := c.Request().Context()
@@ -35,6 +35,8 @@ func getMe(c echo.Context) (*traq.MyUserDetail, *traq.APIClient, error) {
 		// unauthorized
 		return nil, nil, err
 	}
+
+	fmt.Println(res.StatusCode)
 
 	if res.StatusCode != 200 {
 		fmt.Printf("failed to get me: %d\n", res.StatusCode)
