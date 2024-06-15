@@ -52,6 +52,8 @@ func main() {
 	// 「/hello」というエンドポイントを設定する
 	e.GET("/hello", handler.GetHello)
 
+	e.GET("/api/users/:userId",handler.GetUser)
+
 	// Webサーバーをポート番号8080で起動し、エラーが発生した場合はログにエラーメッセージを出力する
 	e.Logger.Fatal(e.Start(":8080"))
 }
