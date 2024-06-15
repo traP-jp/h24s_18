@@ -6,8 +6,9 @@ import (
 
 type User struct {
 	gorm.Model
-	Name string
-	Id   string
+	Name        string
+	Id          string
+	Description string
 }
 
 func CreateUser(name string, id string) error {
