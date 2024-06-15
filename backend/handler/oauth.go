@@ -3,12 +3,14 @@ package handler
 import (
 	"crypto/rand"
 	"fmt"
-	"github.com/gorilla/sessions"
-	"github.com/labstack/echo/v4"
-	traqoauth2 "github.com/traPtitech/go-traq-oauth2"
-	"golang.org/x/oauth2"
 	"net/http"
 	"os"
+
+	"github.com/gorilla/sessions"
+	"github.com/labstack/echo/v4"
+	"github.com/traP-jp/h24s_18/model"
+	traqoauth2 "github.com/traPtitech/go-traq-oauth2"
+	"golang.org/x/oauth2"
 )
 
 const (
@@ -28,13 +30,17 @@ var (
 )
 
 func GetMeHandler(c echo.Context) error {
-	user, _, err := getMe(c)
+	u, _, err := getMe(c)
 
 	if err != nil {
 		return err
 	}
+	user, err := model.GetUser(u.Name)
+	if err != nil {
+		return err
+	}
 
-	return c.JSON(http.StatusOK, fmt.Sprintf("Hello, %s!", user.Name))
+	return c.JSON(http.StatusOK, user)
 }
 
 func AuthorizeHandler(c echo.Context) error {
