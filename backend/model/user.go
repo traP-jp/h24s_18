@@ -35,3 +35,7 @@ func GetUser(id string) (User, error) {
 	result := db.First(&user, "id = ?", id)
 	return user, result.Error
 }
+
+func UpdateUserBio(id string,bio string) {
+	db.Model(&User{}).Where("Id =?",id).Update("Bio",bio)
+}

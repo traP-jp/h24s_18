@@ -65,6 +65,7 @@ func main() {
 	e.GET("/api/oauth2/authorize", handler.AuthorizeHandler)
 	e.GET("/api/oauth2/callback", handler.CallbackHandler)
 	e.GET("/api/me", handler.GetMeHandler)
+	e.PATCH("/api/me",handler.PatchMe)
 	e.POST("/api/me/tags", handler.PostTag)
 
 	// Webサーバーをポート番号8080で起動し、エラーが発生した場合はログにエラーメッセージを出力する
