@@ -19,16 +19,19 @@ const navigateTo = (tag: string) => {
 .tag-button {
   background-color: #e2e5e9;
   border: 2px solid #d0d0d0;
-  border-radius: 18px;
+  border-radius: 20px;
   padding: 4px 15px;
   margin: 5px;
   cursor: pointer;
   font: inherit;
-  font-size: 16px !important;
+  font-size: 14px !important;
   font-weight: bold;
   color: inherit;
+  transition: background-color 0.1s, color 0.1s, border-color 0.1s;
 }
 .tag-button:hover {
-  background-color: #d0d0d0;
+  background-color: #005bac;
+  color: white;
+  border-color: #005bac;
 }
 </style>

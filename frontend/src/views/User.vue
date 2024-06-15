@@ -70,7 +70,7 @@ const getImageUrl = (name: string) => {
 
 <template>
   <div>
-    <UserIcon :userId="userId" :size="150" />
+    <UserIcon :userId="userId" :size="120" />
     <h2>@{{ userId }}</h2>
     <div class="profile-links">
       <div class="profile-link" v-for="link in profileLinks" :key="link.name">
@@ -96,14 +96,20 @@ const getImageUrl = (name: string) => {
     <!-profile表示->
     <div v-if="!isEditing">
       <p>{{ biography }}</p>
-      <button v-if="isMyPage" @click="startEditing">編集</button>
+      <button class="edit-button" v-if="isMyPage" @click="startEditing">
+        編集
+      </button>
     </div>
 
     <!-profile編集->
     <div v-else>
-      <textarea v-model="editBiography"></textarea>
-      <button @click="saveBiography">保存</button>
-      <button @click="cancelEditing">キャンセル</button>
+      <div>
+        <textarea v-model="editBiography"></textarea>
+      </div>
+      <button class="edit-button save-button" @click="saveBiography">
+        保存
+      </button>
+      <button class="edit-button" @click="cancelEditing">キャンセル</button>
     </div>
   </div>
 </template>
@@ -142,5 +148,32 @@ const getImageUrl = (name: string) => {
 .snsIcon {
   fill: currentColor;
   width: 20px;
+}
+textarea {
+  width: 600px;
+  height: 6%;
+  border-radius: 40px;
+  border: 2px solid #e2e5e9;
+  margin: 10px;
+  padding: 20px;
+  color: inherit;
+  font: inherit;
+  font-size: 16px;
+}
+.edit-button {
+  background-color: #e2e5e9;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 24px;
+  margin: 5px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 16px !important;
+  font-weight: bold;
+  color: inherit;
+}
+.save-button {
+  background-color: #005bac;
+  color: white;
 }
 </style>
