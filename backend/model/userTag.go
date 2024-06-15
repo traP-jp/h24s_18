@@ -1,13 +1,9 @@
 package model
 
-import (
-	"gorm.io/gorm"
-)
-
 type UserTag struct {
-	gorm.Model
-	UserId    string
-	TagName   string
+	model
+	UserId    string `gorm:"primaryKey"`
+	TagName   string `gorm:"primaryKey"`
 	IsStarred bool
 }
 
