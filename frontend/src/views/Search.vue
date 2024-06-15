@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import router from "../router";
+import Tagbutton from "../components/Tagbutton.vue";
 
 interface User {
   name: string;
@@ -12,11 +12,6 @@ const userData = ref<User[]>([
   { name: "aya_se", tags: ["23M"] },
   { name: "eru_o2lo", tags: ["24B"] },
 ]);
-
-const navigateToTag = (tag: string) => {
-  // クエリパラメータを指定してページ遷移する
-  router.push({ name: "Search", query: { q: tag } });
-};
 </script>
 
 <template>
@@ -34,8 +29,8 @@ const navigateToTag = (tag: string) => {
           alt="アイコン"
           id="icon"
         />
-        <div v-for="tag in user.tags.slice()" :key="tag" class="tag">
-          <button @click="navigateToTag(tag)">{{ tag }}</button>
+        <div v-for="tag in user.tags.slice()" :key="tag" class="Tag">
+          <Tagbutton :tag="tag" />
         </div>
       </div>
     </li>
