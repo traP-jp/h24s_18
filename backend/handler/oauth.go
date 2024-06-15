@@ -4,14 +4,13 @@ import (
 	"crypto/rand"
 	"errors"
 	"fmt"
-	"net/http"
-	"os"
-
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo/v4"
 	"github.com/traP-jp/h24s_18/model"
 	traqoauth2 "github.com/traPtitech/go-traq-oauth2"
 	"golang.org/x/oauth2"
+	"net/http"
+	"os"
 )
 
 const (
@@ -114,7 +113,15 @@ func CallbackHandler(c echo.Context) error {
 		return fmt.Errorf("failed to save session: %w", err)
 	}
 
-	// Save data to database
+	user, _, err := getMe(c)
+	if err != nil {
+		return err
+	}
+
+	err = model.CreateUserIfNotExist(user.GetDisplayName(), user.GetName(), user.GetBio(), user.GetTwitterId(), user.GetHomeChannel())
+	if err != nil {
+		return err
+	}
 
 	return c.String(http.StatusOK, "success")
 }
