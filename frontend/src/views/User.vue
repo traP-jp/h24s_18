@@ -35,13 +35,43 @@ const tags = ref<string[]>(["23M", "aaa", "ハッカソンなう"]);
       id="icon"
     />
     <p>
-      <img src="../assets/x.svg" alt="アイコン" id="snsIcon">
-      <a href="https://x.com/ayase_lab">{{ $route.params.id }}のツイッター</a>
+      <img src="../assets/x.svg" alt="アイコン" id="snsIcon" />
+      <a
+        href="https://x.com/ayase_lab"
+        target="_blank"
+        rel="noopener noreferrer"
+        >{{ $route.params.id }}</a
+      >
     </p>
-    <p><img src="../assets/traQ.svg" alt="アイコン" id="snsIcon">
-    <a :href="`https://q.trap.jp/channels/gps/times/${$route.params.id}`"
-      >{{ $route.params.id }}のtraqtimes</a
-    ></p>
+    <p>
+      <img src="../assets/traQ.svg" alt="アイコン" id="snsIcon" />
+      <a
+        :href="`https://q.trap.jp/channels/gps/times/${$route.params.id}`"
+        target="_blank"
+        rel="noopener noreferrer"
+        >#gps/times/{{ $route.params.id }}</a
+      >
+    </p>
+    <p>
+      <a
+        :href="`https://wiki.trap.jp/user/${$route.params.id}`"
+        target="_blank"
+        rel="noopener noreferrer"
+        ><img src="../assets/crowi.svg" alt="アイコン" id="snsIcon" />user/{{
+          $route.params.id
+        }}</a
+      >
+    </p>
+    <p>
+      <a
+        :href="`https://trap.jp/author/${$route.params.id}/`"
+        target="_blank"
+        rel="noopener noreferrer"
+        ><img src="../assets/traP.svg" alt="アイコン" id="snsIcon" />author/{{
+          $route.params.id
+        }}
+      </a>
+    </p>
     <div v-for="tag in tags.slice()" :key="tag">
       <Tagbutton :tag="tag" />
     </div>
