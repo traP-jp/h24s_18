@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import Tagbutton from "../components/Tagbutton.vue";
 
 //プロフィールデータ
 const biography = ref<string>("ここに自己紹介文が表示されます");
@@ -20,13 +21,28 @@ const saveBiography = () => {
 const cancelEditing = () => {
   isEditing.value = false; //編集モードを終了
 };
+
+const tags = ref<string[]>(["23M", "aaa", "ハッカソンなう"]);
 </script>
 
 <template>
   <div>
     <h1>ユーザーページ</h1>
     <h2>{{ $route.params.id }}</h2>
-
+    <img
+      :src="`https://q.trap.jp/api/v3/public/icon/${$route.params.id}`"
+      alt="アイコン"
+      id="icon"
+    />
+    <p>
+      <a href="https://x.com/ayase_lab">{{ $route.params.id }}のツイッター</a>
+    </p>
+    <a :href="`https://q.trap.jp/channels/gps/times/${$route.params.id}`"
+      >{{ $route.params.id }}のtraqtimes</a
+    >
+    <div v-for="tag in tags.slice()" :key="tag">
+      <Tagbutton :tag="tag" />
+    </div>
     <!-profile表示->
     <div v-if="!isEditing">
       <p>{{ biography }}</p>
@@ -42,4 +58,9 @@ const cancelEditing = () => {
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+#icon {
+  width: 90px;
+  border-radius: 50%;
+}
+</style>
