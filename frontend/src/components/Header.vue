@@ -30,7 +30,9 @@ const logout = () => {
           :to="{ name: 'User', params: { id: store.user.id } }"
           >ユーザーページ</RouterLink
         >
-        <RouterLink class="header-button" :to="{ name: 'Search' }"
+        <RouterLink
+          class="header-button"
+          :to="{ name: 'Search', query: { q: 'SysAd' } }"
           >検索ページ</RouterLink
         >
         <button class="header-button" @click="logout">ログアウト</button>
