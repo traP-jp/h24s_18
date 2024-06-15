@@ -14,6 +14,7 @@ services:
       MARIADB_PASSWORD: password
       MARIADB_HOSTNAME: db
       MARIADB_DATABASE: database
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
     depends_on:
       db:
         condition: service_healthy

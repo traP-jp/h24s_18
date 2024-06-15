@@ -19,7 +19,7 @@ func main() {
 
 	ctx := context.Background()
 
-	client, err := genai.NewClient(ctx, option.WithAPIKey("AIzaSyAow8apSTGtxzmskl7PtCXxNTJ-3I472Wg"))
+	client, err := genai.NewClient(ctx, option.WithAPIKey(os.Getenv("GEMINI_API_KEY")))
 
 	if err != nil {
 		panic(err)
