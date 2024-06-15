@@ -14,8 +14,7 @@ import Header from "./components/Header.vue";
 
 <style scoped>
 main {
-  width: 100vw;
-  margin-top: 60px;
-  padding: 20px;
+  width: 100%;
+  margin-top: 30px;
 }
 </style>

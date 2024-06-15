@@ -1,13 +1,22 @@
 <script setup lang="ts">
 import Tagbutton from "../components/Tagbutton.vue";
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 import { useRoute } from "vue-router";
+import UserIcon from "../components/UserIcon.vue";
 
 //プロフィールデータ
 const route = useRoute();
 const biography = ref<string>("ここに自己紹介文が表示されます");
 const editBiography = ref<string>("");
 const isEditing = ref<boolean>(false);
+const userId = ref<string>(route.params.id as string);
+
+watch(
+  () => route.params.id,
+  (newId: any) => {
+    userId.value = newId as string;
+  }
+);
 
 //関数定義
 const startEditing = () => {
@@ -28,57 +37,59 @@ const tags = ref<string[]>(["23M", "aaa", "ハッカソンなう"]);
 //本人確認
 import { store } from "../store";
 const isMyPage = computed(() => {
-  return store.user.id === route.params.id;
+  return store.user.id === userId.value;
 });
+const xId = ref<string>("ayase_lab");
+const profileLinks = ref<any>([
+  {
+    name: "x",
+    url: `https://x.com/${xId.value}`,
+    displayUrl: `@${xId.value}`,
+  },
+  {
+    name: "traQ",
+    url: `https://q.trap.jp/channels/gps/times/${userId.value}`,
+    displayUrl: `#gps/times/${userId.value}`,
+  },
+  {
+    name: "crowi",
+    url: `https://wiki.trap.jp/user/${userId.value}`,
+    displayUrl: `user/${userId.value}`,
+  },
+  {
+    name: "traP",
+    url: `https://trap.jp/author/${userId.value}`,
+    displayUrl: `author/${userId.value}`,
+  },
+]);
+
+const getImageUrl = (name: string) => {
+  return new URL(`../assets/${name}.svg`, import.meta.url).href;
+};
 </script>
 
 <template>
   <div>
-    <h1>ユーザーページ</h1>
-    <h2>{{ $route.params.id }}</h2>
-    <img
-      :src="`https://q.trap.jp/api/v3/public/icon/${$route.params.id}`"
-      alt="アイコン"
-      id="icon"
-    />
-    <p>
-      <img src="../assets/x.svg" alt="アイコン" id="snsIcon" />
-      <a
-        href="https://x.com/ayase_lab"
-        target="_blank"
-        rel="noopener noreferrer"
-        >{{ $route.params.id }}</a
-      >
-    </p>
-    <p>
-      <img src="../assets/traQ.svg" alt="アイコン" id="snsIcon" />
-      <a
-        :href="`https://q.trap.jp/channels/gps/times/${$route.params.id}`"
-        target="_blank"
-        rel="noopener noreferrer"
-        >#gps/times/{{ $route.params.id }}</a
-      >
-    </p>
-    <p>
-      <a
-        :href="`https://wiki.trap.jp/user/${$route.params.id}`"
-        target="_blank"
-        rel="noopener noreferrer"
-        ><img src="../assets/crowi.svg" alt="アイコン" id="snsIcon" />user/{{
-          $route.params.id
-        }}</a
-      >
-    </p>
-    <p>
-      <a
-        :href="`https://trap.jp/author/${$route.params.id}/`"
-        target="_blank"
-        rel="noopener noreferrer"
-        ><img src="../assets/traP.svg" alt="アイコン" id="snsIcon" />author/{{
-          $route.params.id
-        }}
-      </a>
-    </p>
+    <UserIcon :userId="userId" :size="150" />
+    <h2>@{{ userId }}</h2>
+    <div class="profile-links">
+      <div class="profile-link" v-for="link in profileLinks" :key="link.name">
+        <div class="profile-icon">
+          <img
+            class="profile-icon-image"
+            :src="getImageUrl(link.name)"
+            alt="icon"
+          />
+        </div>
+        <a
+          class="profile-url"
+          :href="link.url"
+          target="_blank"
+          rel="noopener noreferrer"
+          >{{ link.displayUrl }}</a
+        >
+      </div>
+    </div>
     <div v-for="tag in tags.slice()" :key="tag">
       <Tagbutton :tag="tag" />
     </div>
@@ -98,11 +109,38 @@ const isMyPage = computed(() => {
 </template>
 
 <style scoped>
-#icon {
-  width: 90px;
+.profile-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.profile-link {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 10px;
+}
+.profile-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 5px;
+  background-color: #e2e5e9;
+  border-radius: 50%;
+  padding: 5px;
+}
+.profile-icon-image {
+  width: 100%;
+  height: 100%;
   border-radius: 50%;
 }
-#snsIcon {
+.profile-url {
+  color: #49535b;
+}
+.profile-url:hover {
+  color: #0070f3;
+}
+.snsIcon {
+  fill: currentColor;
   width: 20px;
 }
 </style>
