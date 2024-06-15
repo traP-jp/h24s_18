@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import Biography from "../components/Biography.vue";
-import SampleButton from "../components/SampleButton.vue";
-//import Biography from "../components/Biography.vue";一旦無視
 import { ref } from "vue";
 
 //プロフィールデータ
@@ -29,7 +26,6 @@ const cancelEditing = () => {
   <div>
     <h1>ユーザーページ</h1>
     <h2>{{ $route.params.id }}</h2>
-    <h3>Profile</h3>
 
     <!-profile表示->
     <div v-if="!isEditing">
@@ -43,12 +39,6 @@ const cancelEditing = () => {
       <button @click="saveBiography">保存</button>
       <button @click="cancelEditing">キャンセル</button>
     </div>
-
-    <h4>{{ biography }}</h4>
-
-    <Biography />
-
-    <SampleButton />
   </div>
 </template>
 
