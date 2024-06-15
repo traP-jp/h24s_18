@@ -4,6 +4,7 @@ import (
 	"encoding/gob"
 
 	"golang.org/x/oauth2"
+	"net/http"
 
 	//"github.com/google/generative-ai-go/genai"
 	"os"
@@ -56,6 +57,11 @@ func main() {
 	// Echoの新しいインスタンスを作成
 	e := echo.New()
 
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"http://localhost:5173"},
+		AllowMethods: []string{http.MethodGet, http.MethodPatch, http.MethodPost, http.MethodDelete},
+	}))
+
 	e.Use(middleware.Logger())
 
 	// 「/hello」というエンドポイントを設定する
@@ -66,7 +72,7 @@ func main() {
 	e.GET("/api/oauth2/callback", handler.CallbackHandler)
 	e.GET("/api/me", handler.GetMeHandler)
 	e.PATCH("/api/me",handler.PatchMe)
-	e.POST("/api/me/tags", handler.PostTag)
+  e.POST("/api/me/tags", handler.PostTag)
 
 	// Webサーバーをポート番号8080で起動し、エラーが発生した場合はログにエラーメッセージを出力する
 	e.Logger.Fatal(e.Start(":8080"))
