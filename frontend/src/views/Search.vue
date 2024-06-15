@@ -20,20 +20,23 @@ const userData = ref<User[]>([
     <h2 v-if="$route.query.q">
       <div id="app"># {{ $route.query.q }}</div>
     </h2>
-
-    <li v-for="user in userData.slice()" :key="user.name">
-      <div class="username">
-        <h3>{{ user.name }}</h3>
-        <img
-          :src="`https://q.trap.jp/api/v3/public/icon/${user.name}`"
-          alt="アイコン"
-          id="icon"
-        />
-        <div v-for="tag in user.tags.slice()" :key="tag" class="Tag">
-          <Tagbutton :tag="tag" />
+    <div class="user-list" v-for="user in userData.slice()" :key="user.name">
+      <div class="user">
+        <div class="username">
+          <img
+            :src="`https://q.trap.jp/api/v3/public/icon/${user.name}`"
+            alt="アイコン"
+            id="icon"
+          />
+          <strong>@{{ user.name }}</strong>
+        </div>
+        <div class="usertag">
+          <div v-for="tag in user.tags.slice()" :key="tag" class="Tag">
+            <Tagbutton :tag="tag" />
+          </div>
         </div>
       </div>
-    </li>
+    </div>
   </div>
 </template>
 
@@ -43,11 +46,30 @@ const userData = ref<User[]>([
   border-radius: 50%;
 }
 
+.user-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.user {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  margin: 10px;
+}
 .username {
-  display: inline-block;
+  display: flex;
+  flex-wrap: wrap;
+  width: 100px;
+  align-items: center;
+  justify-content: center;
 }
 
 .usertag {
-  display: inline-block;
+  display: flex;
+  flex-wrap: wrap;
+  width: calc(100% - 140px);
+  padding: 0 20px;
 }
 </style>

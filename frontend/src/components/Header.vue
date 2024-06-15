@@ -68,6 +68,7 @@ const logout = () => {
   background: none;
   border: none;
   cursor: pointer;
+  font-size: 16px;
   margin: 0 10px;
   padding: 0;
 }
