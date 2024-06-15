@@ -5,9 +5,9 @@ import { API_URL } from "../const";
 import axios from "axios";
 
 const login = () => {
-  store.user.id = "aya_se";
-  router.push({ name: "User", params: { id: store.user.id } });
-  return;
+  // store.user.id = "aya_se";
+  // router.push({ name: "User", params: { id: store.user.id } });
+  // return;
   // TODO: traQ認証の実装
   const searchParams = new URLSearchParams(window.location.search);
   console.log(searchParams.toString());
@@ -83,6 +83,7 @@ const login = () => {
 <template>
   <div>
     <h1>認証ページ</h1>
+    <a class="authorize_link" :href="`${API_URL}/api/oauth2/authorize`">認証用リンク</a>
     <button class="authorize_button" @click="login">認証する</button>
   </div>
 </template>

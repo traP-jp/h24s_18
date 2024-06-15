@@ -56,7 +56,8 @@ func main() {
 	e := echo.New()
 
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"http://localhost:5173"},
+		Skipper:      middleware.DefaultSkipper,
+		AllowOrigins: []string{"localhost:8080"},
 		AllowMethods: []string{http.MethodGet, http.MethodPatch, http.MethodPost, http.MethodDelete},
 	}))
 
