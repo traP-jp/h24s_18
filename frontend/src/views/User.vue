@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import Tagbutton from "../components/Tagbutton.vue";
+import { ref, computed } from "vue";
+import { useRoute } from "vue-router";
 
 //プロフィールデータ
+const route = useRoute();
 const biography = ref<string>("ここに自己紹介文が表示されます");
 const editBiography = ref<string>("");
 const isEditing = ref<boolean>(false);
@@ -20,17 +23,69 @@ const saveBiography = () => {
 const cancelEditing = () => {
   isEditing.value = false; //編集モードを終了
 };
+
+const tags = ref<string[]>(["23M", "aaa", "ハッカソンなう"]);
+//本人確認
+import { store } from "../store";
+const isMyPage = computed(() => {
+  return store.user.id === route.params.id;
+});
 </script>
 
 <template>
   <div>
     <h1>ユーザーページ</h1>
     <h2>{{ $route.params.id }}</h2>
-
+    <img
+      :src="`https://q.trap.jp/api/v3/public/icon/${$route.params.id}`"
+      alt="アイコン"
+      id="icon"
+    />
+    <p>
+      <img src="../assets/x.svg" alt="アイコン" id="snsIcon" />
+      <a
+        href="https://x.com/ayase_lab"
+        target="_blank"
+        rel="noopener noreferrer"
+        >{{ $route.params.id }}</a
+      >
+    </p>
+    <p>
+      <img src="../assets/traQ.svg" alt="アイコン" id="snsIcon" />
+      <a
+        :href="`https://q.trap.jp/channels/gps/times/${$route.params.id}`"
+        target="_blank"
+        rel="noopener noreferrer"
+        >#gps/times/{{ $route.params.id }}</a
+      >
+    </p>
+    <p>
+      <a
+        :href="`https://wiki.trap.jp/user/${$route.params.id}`"
+        target="_blank"
+        rel="noopener noreferrer"
+        ><img src="../assets/crowi.svg" alt="アイコン" id="snsIcon" />user/{{
+          $route.params.id
+        }}</a
+      >
+    </p>
+    <p>
+      <a
+        :href="`https://trap.jp/author/${$route.params.id}/`"
+        target="_blank"
+        rel="noopener noreferrer"
+        ><img src="../assets/traP.svg" alt="アイコン" id="snsIcon" />author/{{
+          $route.params.id
+        }}
+      </a>
+    </p>
+    <div v-for="tag in tags.slice()" :key="tag">
+      <Tagbutton :tag="tag" />
+    </div>
     <!-profile表示->
     <div v-if="!isEditing">
       <p>{{ biography }}</p>
-      <button @click="startEditing">編集</button>
+      <button v-if="isMyPage" @click="startEditing">編集</button>
     </div>
 
     <!-profile編集->
@@ -42,4 +97,12 @@ const cancelEditing = () => {
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+#icon {
+  width: 90px;
+  border-radius: 50%;
+}
+#snsIcon {
+  width: 20px;
+}
+</style>

@@ -12,7 +12,22 @@ const navigateTo = (tag: string) => {
 </script>
 
 <template>
-  <button @click="navigateTo(tag)">#&nbsp;{{ tag }}</button>
+  <button class="tag-button" @click="navigateTo(tag)">#&nbsp;{{ tag }}</button>
 </template>
 
-<style></style>
+<style scoped>
+.tag-button {
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 5px 10px;
+  margin: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-family: "M PLUS 1p", sans-serif;
+  font-size: 16px;
+}
+.tag-button:hover {
+  background-color: #e0e0e0;
+}
+</style>
