@@ -35,11 +35,13 @@ const tags = ref<string[]>(["23M", "aaa", "ハッカソンなう"]);
       id="icon"
     />
     <p>
+      <img src="../assets/x.svg" alt="アイコン" id="snsIcon">
       <a href="https://x.com/ayase_lab">{{ $route.params.id }}のツイッター</a>
     </p>
+    <p><img src="../assets/traQ.svg" alt="アイコン" id="snsIcon">
     <a :href="`https://q.trap.jp/channels/gps/times/${$route.params.id}`"
       >{{ $route.params.id }}のtraqtimes</a
-    >
+    ></p>
     <div v-for="tag in tags.slice()" :key="tag">
       <Tagbutton :tag="tag" />
     </div>
@@ -62,5 +64,8 @@ const tags = ref<string[]>(["23M", "aaa", "ハッカソンなう"]);
 #icon {
   width: 90px;
   border-radius: 50%;
+}
+#snsIcon {
+  width: 20px;
 }
 </style>
