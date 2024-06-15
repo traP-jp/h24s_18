@@ -3,8 +3,9 @@ package main
 import (
 	"encoding/gob"
 
-	"golang.org/x/oauth2"
 	"net/http"
+
+	"golang.org/x/oauth2"
 
 	//"github.com/google/generative-ai-go/genai"
 	"os"
@@ -71,8 +72,9 @@ func main() {
 	e.GET("/api/oauth2/authorize", handler.AuthorizeHandler)
 	e.GET("/api/oauth2/callback", handler.CallbackHandler)
 	e.GET("/api/me", handler.GetMeHandler)
-	e.PATCH("/api/me",handler.PatchMe)
-  e.POST("/api/me/tags", handler.PostTag)
+	e.PATCH("/api/me", handler.PatchMe)
+	e.POST("/api/me/tags", handler.PostTag)
+	e.DELETE("/api/me/tags", handler.DeleteTag)
 
 	// Webサーバーをポート番号8080で起動し、エラーが発生した場合はログにエラーメッセージを出力する
 	e.Logger.Fatal(e.Start(":8080"))
