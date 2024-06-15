@@ -11,13 +11,13 @@ type Tag struct {
 }
 
 func CreateTag(name string, value string) error {
-	Tag := Tag{Name: name, Value: value}
-	result := db.Create(&Tag)
+	tag := Tag{Name: name, Value: value}
+	result := db.Create(&tag)
 	return result.Error
 }
 
 func GetTag(value string) (Tag, error) {
-	var Tag Tag
-	result := db.First(&Tag, "value = ?", value)
-	return Tag, result.Error
+	var tag Tag
+	result := db.First(&tag, "value = ?", value)
+	return tag, result.Error
 }
