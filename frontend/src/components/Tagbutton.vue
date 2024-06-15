@@ -17,17 +17,21 @@ const navigateTo = (tag: string) => {
 
 <style scoped>
 .tag-button {
-  background-color: #f0f0f0;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 5px 10px;
+  background-color: #e2e5e9;
+  border: 2px solid #d0d0d0;
+  border-radius: 20px;
+  padding: 4px 15px;
   margin: 5px;
   cursor: pointer;
-  transition: background-color 0.3s;
-  font-family: "M PLUS 1p", sans-serif;
-  font-size: 16px;
+  font: inherit;
+  font-size: 14px !important;
+  font-weight: bold;
+  color: inherit;
+  transition: background-color 0.1s, color 0.1s, border-color 0.1s;
 }
 .tag-button:hover {
-  background-color: #e0e0e0;
+  background-color: #005bac;
+  color: white;
+  border-color: #005bac;
 }
 </style>
