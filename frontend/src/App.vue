@@ -1,16 +1,11 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from "vue-router";
-import { store } from "./store";
+import { RouterView } from "vue-router";
+import Header from "./components/Header.vue";
 </script>
 
 <template>
   <div>
-    <p><strong>Current route path:</strong> {{ $route.fullPath }}</p>
-    <RouterLink :to="{ name: 'User', params: { id: store.user.id } }"
-      >ユーザーページへ</RouterLink
-    >
-    <hr />
-    <RouterLink :to="{ name: 'Search' }">検索ページへ</RouterLink>
+    <Header />
     <main>
       <RouterView />
     </main>
