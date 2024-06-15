@@ -17,8 +17,8 @@ func CreateUserTag(userId string, tagName string, isStarred bool) error {
 	return result.Error
 }
 
-func GetUserTag(tagName string) (UserTag, error) {
-	var userTag UserTag
-	result := db.First(&userTag, "tagName = ?", tagName)
+func GetUserTagsByUserId(tagName string) ([]UserTag, error) {
+	var userTag []UserTag
+	result := db.Find(&userTag, "tagName = ?", tagName)
 	return userTag, result.Error
 }
