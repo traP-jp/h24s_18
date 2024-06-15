@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
+import { useRoute } from "vue-router";
 
 //プロフィールデータ
+const route = useRoute();
 const biography = ref<string>("ここに自己紹介文が表示されます");
 const editBiography = ref<string>("");
 const isEditing = ref<boolean>(false);
@@ -20,6 +22,12 @@ const saveBiography = () => {
 const cancelEditing = () => {
   isEditing.value = false; //編集モードを終了
 };
+
+//本人確認
+import { store } from "../store";
+const isMyPage = computed(() => {
+  return store.user.id === route.params.id;
+});
 </script>
 
 <template>
@@ -30,7 +38,7 @@ const cancelEditing = () => {
     <!-profile表示->
     <div v-if="!isEditing">
       <p>{{ biography }}</p>
-      <button @click="startEditing">編集</button>
+      <button v-if="isMyPage" @click="startEditing">編集</button>
     </div>
 
     <!-profile編集->
