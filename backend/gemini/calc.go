@@ -10,9 +10,13 @@ import (
 	"google.golang.org/api/option"
 )
 
+const (
+	EmbeddingDimension = 768
+)
+
 type Embedding []float32
 
-func GetTagValue(tag string, ctx context.Context) (*Embedding, error) {
+func GetEmbedding(str string, ctx context.Context) (*Embedding, error) {
 	client, err := genai.NewClient(ctx, option.WithAPIKey(os.Getenv("GEMINI_API_KEY")))
 	if err != nil {
 		return nil, err
@@ -21,7 +25,7 @@ func GetTagValue(tag string, ctx context.Context) (*Embedding, error) {
 
 	em := client.EmbeddingModel("text-embedding-004")
 
-	res, err := em.EmbedContent(ctx, genai.Text("日本人"))
+	res, err := em.EmbedContent(ctx, genai.Text(str))
 	if err != nil {
 		panic(err)
 	}
@@ -40,6 +44,12 @@ func (emb *Embedding) String() string {
 	return s[:len(s)-1]
 }
 
+func ScanEmb(val string) (*Embedding, error) {
+	emb := Embedding{}
+	err := emb.Scan(val)
+	return &emb, err
+}
+
 func (emb *Embedding) Scan(src string) error {
 	var _emb Embedding
 	for _, s := range strings.Split(src, " ") {
@@ -49,6 +59,8 @@ func (emb *Embedding) Scan(src string) error {
 		}
 		_emb = append(_emb, float32(v))
 	}
+
+	*emb = _emb
 
 	return nil
 }
