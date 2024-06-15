@@ -17,7 +17,7 @@ func Init(user, pass, host, dbname string) error {
 	}
 
 	db = _db
-	db.AutoMigrate(&User{})
+	db.AutoMigrate(&User{}, &Tag{})
 
 	return nil
 }
