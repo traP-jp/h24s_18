@@ -24,13 +24,13 @@ onMounted(async () => {
     router.push({ name: "User", params: { id: store.user.id } });
   } catch (error) {
     console.error(error);
+    //window.location.href = `${API_URL}/api/oauth2/authorize`;
   }
 });
 </script>
 
 <template>
   <div>
-    <h1>認証ページ</h1>
     <a class="authorize_button" :href="`${API_URL}/api/oauth2/authorize`"
       >認証する</a
     >
@@ -44,13 +44,10 @@ onMounted(async () => {
   font-weight: bold;
   font-size: 20px;
   width: 128px;
-  padding: 10px 20px;
-  border-radius: 10px;
+  padding: 10px 30px;
+  border-radius: 20px;
   outline: none;
   border: none;
   cursor: pointer;
-  &:hover {
-    background-color: #0066cc;
-  }
 }
 </style>
