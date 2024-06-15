@@ -18,6 +18,9 @@ func PostTag(c echo.Context) error {
 		// 正常でないためステータスコード 400 Bad Requestを返し、 エラーを文字列に変換して出力
 		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("%+v", err))
 	}
+
+	model.CreateTag(db.Name, db.Value)
+
 	// エラーが起きなかったとき、正常なのでステータスコード 200 OK を返し、リクエストデータをそのまま返す
 	return c.JSON(http.StatusOK, db)
 }
