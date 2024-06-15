@@ -1,11 +1,9 @@
-<script setup lang="ts">
-import SampleButton from "../components/SampleButton.vue";
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <div>
     <h1>ユーザーページ</h1>
-    <SampleButton />
+    <h3>{{ $route.params.id }}</h3>
   </div>
 </template>
 
