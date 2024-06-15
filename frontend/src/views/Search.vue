@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import Tagbutton from "../components/Tagbutton.vue";
+import UserIcon from "../components/UserIcon.vue";
 
 interface User {
   name: string;
@@ -16,18 +17,17 @@ const userData = ref<User[]>([
 
 <template>
   <div>
-    <h1>検索ページ</h1>
-    <h2 v-if="$route.query.q">
-      <div id="app"># {{ $route.query.q }}</div>
-    </h2>
+    <div class="search-title" v-if="$route.query.q">
+      <strong># {{ $route.query.q }}</strong
+      >&nbsp;の検索結果
+    </div>
     <div class="user-list" v-for="user in userData.slice()" :key="user.name">
       <div class="user">
         <div class="username">
-          <img
-            :src="`https://q.trap.jp/api/v3/public/icon/${user.name}`"
-            alt="アイコン"
-            id="icon"
-          />
+          <RouterLink :to="{ name: 'User', params: { id: user.name } }"
+            ><UserIcon :userId="user.name" :size="90"
+          /></RouterLink>
+
           <strong>@{{ user.name }}</strong>
         </div>
         <div class="usertag">
@@ -41,17 +41,22 @@ const userData = ref<User[]>([
 </template>
 
 <style scoped>
-#icon {
-  width: 90px;
-  border-radius: 50%;
+.search-title {
+  font-size: 24px;
+  margin: 20px 0;
+  strong {
+    font-size: 32px;
+    color: #005bac;
+  }
 }
-
 .user-list {
+  max-width: 800px;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  border-top: 1px solid #e2e5e9;
+  margin: 0 auto;
 }
-
 .user {
   display: flex;
   flex-wrap: wrap;
@@ -65,7 +70,6 @@ const userData = ref<User[]>([
   align-items: center;
   justify-content: center;
 }
-
 .usertag {
   display: flex;
   flex-wrap: wrap;
