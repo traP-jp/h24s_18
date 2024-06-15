@@ -1,90 +1,39 @@
 <script setup lang="ts">
-import { store } from "../store";
 import router from "../router";
-import { API_URL } from "../const";
-import axios from "axios";
+import { store, API_URL } from "../store";
+import { onMounted } from "vue";
 
-const login = () => {
-  // store.user.id = "aya_se";
-  // router.push({ name: "User", params: { id: store.user.id } });
-  // return;
-  // TODO: traQ認証の実装
-  const searchParams = new URLSearchParams(window.location.search);
-  console.log(searchParams.toString());
-  if (searchParams.toString() === "") {
-    axios
-      .get(`${API_URL}/api/me`, {
-        withCredentials: true,
-        /* CORS回避 */
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": API_URL,
-        },
-      })
-      .then((res) => {
-        console.log(res.data);
-        store.user.id = res.data.id;
-        store.user.name = res.data.name;
-        router.push({ name: "User", params: { id: store.user.id } });
-      })
-      .catch((err) => {
-        console.log(err);
-        axios
-          .get(`${API_URL}/api/oauth2/authorize?${searchParams}`, {
-            withCredentials: true,
-            /* CORS回避 */
-            headers: {
-              "Content-Type": "application/json",
-              "Access-Control-Allow-Origin": API_URL,
-            },
-          })
-          .then((res) => {
-            console.log(res);
-            axios
-              .get(`${API_URL}/api/me`, {
-                withCredentials: true,
-                /* CORS回避 */
-                headers: {
-                  "Content-Type": "application/json",
-                  "Access-Control-Allow-Origin": API_URL,
-                },
-              })
-              .then((res) => {
-                console.log(res.data);
-                store.user.id = res.data.id;
-                store.user.name = res.data.name;
-                router.push({ name: "User", params: { id: store.user.id } });
-              });
-          });
-      });
-  } else {
-    axios
-      .get(`${API_URL}/api/me`, {
-        withCredentials: true,
-        /* CORS回避 */
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": API_URL,
-        },
-      })
-      .then((res) => {
-        console.log(res.data);
-        store.user.id = res.data.id;
-        store.user.name = res.data.name;
-        router.push({ name: "User", params: { id: store.user.id } });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+onMounted(async () => {
+  // traQ認証の実装
+  try {
+    const res = await fetch(`${API_URL}/api/me`, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": API_URL,
+      },
+    });
+    if (!res.ok) {
+      throw new Error("Failed to fetch user info");
+    }
+    const data = await res.json();
+    console.log(data);
+    store.user.id = data.Id;
+    store.user.name = data.Name;
+    router.push({ name: "User", params: { id: store.user.id } });
+  } catch (error) {
+    console.error(error);
   }
-};
+});
 </script>
 
 <template>
   <div>
     <h1>認証ページ</h1>
-    <a class="authorize_link" :href="`${API_URL}/api/oauth2/authorize`">認証用リンク</a>
-    <button class="authorize_button" @click="login">認証する</button>
+    <a class="authorize_button" :href="`${API_URL}/api/oauth2/authorize`"
+      >認証する</a
+    >
   </div>
 </template>
 

@@ -6,3 +6,5 @@ export const store = reactive({
     name: "あやせ",
   },
 });
+
+export const API_URL = "http://localhost:8080";
