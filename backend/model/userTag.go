@@ -29,8 +29,8 @@ func UpdateUserTags(userId string, tagName string, isStarred bool) error {
 }
 
 // UserTagを削除
-func DeleteUserTag(tagName string) error {
+func DeleteUserTag(userId string, tagName string) error {
 	var userTag []UserTag
-	result := db.Delete(&userTag, "tag_name = ?", tagName)
+	result := db.Delete(&userTag, "user_id = ? AND tag_name = ?", userId, tagName)
 	return result.Error
 }

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/go-sql-driver/mysql"
 	"github.com/traP-jp/h24s_18/gemini"
 	"github.com/traPtitech/go-traq"
 	"gorm.io/gorm"
@@ -18,7 +19,7 @@ type PostTagRequest struct {
 	IsStarred bool   `json:"isStarred" binding:"required"`
 }
 
-func PostTag(c echo.Context) error {
+func PostUserTag(c echo.Context) error {
 	u, _, err := getMe(c)
 
 	if err != nil {
@@ -38,7 +39,7 @@ func PostTag(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("%+v", err))
 	}
 
-	err = insertTag(u, *body, c)
+	err = insertUserTag(u, *body, c)
 
 	if err != nil {
 		return err
@@ -48,10 +49,19 @@ func PostTag(c echo.Context) error {
 	return c.JSON(http.StatusOK, body)
 }
 
-func insertTag(u *traq.MyUserDetail, body PostTagRequest, c echo.Context) error {
+func insertUserTag(u *traq.MyUserDetail, body PostTagRequest, c echo.Context) error {
+	if body.TagName == "" {
+		return c.String(http.StatusBadRequest, "tagname is blank") // http.StatusConflictがエラーの番号に該当する
+	}
+
 	err := model.CreateUserTag(u.Name, body.TagName, body.IsStarred)
 
 	if err != nil {
+		mysqlErr := err.(*mysql.MySQLError)
+		switch mysqlErr.Number {
+		case 1062:
+			return c.String(http.StatusConflict, "tag duplicate") // http.StatusConflictがエラーの番号に該当する
+		}
 		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("%+v", err))
 	}
 
@@ -78,7 +88,7 @@ func insertTag(u *traq.MyUserDetail, body PostTagRequest, c echo.Context) error 
 
 type BulkInsertTagsRequest []PostTagRequest
 
-func BulkInsertTags(c echo.Context) error {
+func BulkInsertUserTags(c echo.Context) error {
 	u, _, err := getMe(c)
 
 	if err != nil {
@@ -99,7 +109,7 @@ func BulkInsertTags(c echo.Context) error {
 	}
 
 	for _, tag := range *body {
-		err = insertTag(u, tag, c)
+		err = insertUserTag(u, tag, c)
 		if err != nil {
 			return err
 		}
@@ -109,7 +119,7 @@ func BulkInsertTags(c echo.Context) error {
 	return c.JSON(http.StatusOK, body)
 }
 
-func UpdateTag(c echo.Context) error {
+func UpdateUserTag(c echo.Context) error {
 	u, _, err := getMe(c)
 
 	if err != nil {
@@ -134,9 +144,18 @@ func UpdateTag(c echo.Context) error {
 	return c.JSON(http.StatusOK, body)
 }
 
-func DeleteTag(c echo.Context) error {
+func DeleteUserTag(c echo.Context) error {
+	u, _, err := getMe(c)
+
+	if err != nil {
+		if errors.Is(err, errUnauthorized) {
+			return c.String(http.StatusUnauthorized, "unauthorized")
+		}
+		return err
+	}
+
 	tagName := c.Param("tagName")
-	err := model.DeleteUserTag(tagName) // サーバー起因のエラー
+	err = model.DeleteUserTag(u.Name, tagName) // サーバー起因のエラー
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("%+v", err))
 	}

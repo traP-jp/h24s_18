@@ -28,7 +28,7 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _from, next) => {
   // 認証がない場合はloginページにリダイレクト
   if (to.name === "Login") {
     if (store.user.id !== "") {
