@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/gob"
 	"golang.org/x/oauth2"
+	"net/http"
 
 	//"github.com/google/generative-ai-go/genai"
 	"github.com/labstack/echo/v4"
@@ -53,6 +54,14 @@ func main() {
 
 	// Echoの新しいインスタンスを作成
 	e := echo.New()
+
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		Skipper:          middleware.DefaultSkipper,
+		AllowOrigins:     []string{"http://localhost:5173"},
+		AllowMethods:     []string{http.MethodGet, http.MethodPatch, http.MethodPost, http.MethodDelete},
+		AllowCredentials: true,
+		AllowHeaders:     []string{echo.HeaderAccessControlAllowOrigin, echo.HeaderOrigin, echo.HeaderXHTTPMethodOverride, echo.HeaderContentType},
+	}))
 
 	e.Use(middleware.Logger())
 
