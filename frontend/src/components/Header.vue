@@ -13,7 +13,8 @@ import UserIcon from "../components/UserIcon.vue";
           ? { name: 'User', params: { id: store.user.id } }
           : { name: 'Login' }
       "
-      >traPハッカソン2024春18班</RouterLink
+      ><div class="header-title-en">En</div>
+      counter</RouterLink
     >
     <div class="header-contents">
       <div v-if="store.user.id">
@@ -45,8 +46,12 @@ import UserIcon from "../components/UserIcon.vue";
   padding-right: 60px;
 }
 .header-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
   color: #005bac;
-  font-size: 20px !important;
+  font-size: 24px !important;
   font-weight: bold;
   background: none;
   border: none;
@@ -54,8 +59,32 @@ import UserIcon from "../components/UserIcon.vue";
   font-size: 16px;
   margin: 0 10px;
   padding: 0;
+  .header-title-en {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 42px;
+    height: 42px;
+    font-size: 28px;
+    background-color: #005bac;
+    color: white;
+    border-radius: 50%;
+    margin-right: 4px;
+  }
 }
 .header-title:hover {
-  color: #0066cc;
+  color: #0066cc !important;
+}
+.header-title-en {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 42px;
+  height: 42px;
+  font-size: 28px;
+  background-color: #005bac;
+  color: white;
+  border-radius: 50%;
+  margin-right: 4px;
 }
 </style>
