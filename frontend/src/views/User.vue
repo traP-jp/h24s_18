@@ -7,13 +7,16 @@ import { API_URL } from "../store";
 
 //プロフィールデータ
 const route = useRoute();
-const biography = ref<string>("");
-const editBiography = ref<string>("");
-const isEditing = ref<boolean>(false);
 const userId = ref<string>(route.params.id as string);
+
+const biography = ref<string>("");
 const tags = ref<string[]>(["23M", "aaa", "ハッカソンなう"]);
 
-const newTag = ref("");
+const editBiography = ref<string>("");
+const editTag = ref("");
+
+const isEditing = ref<boolean>(false);
+
 const xId = ref<string>("");
 
 const getUserInfo = async () => {
@@ -46,13 +49,24 @@ watch(
   }
 );
 
-const editTags = ref<string>("");
-const isEditingTags = ref<boolean>(false);
-
 //関数定義
 const startEditing = () => {
   editBiography.value = biography.value; //現在のプロフィールを編集用に設定
   isEditing.value = true;
+};
+
+const addTag = () => {
+  if (editTag.value === "") return;
+  tags.value.push(editTag.value);
+  editTag.value = "";
+};
+
+const deleteTag = (tag: string) => {
+  tags.value = tags.value.filter((t) => t !== tag);
+};
+
+const cancelEditing = () => {
+  isEditing.value = false; //編集モードを終了
 };
 
 const saveBiography = async () => {
@@ -72,15 +86,6 @@ const saveBiography = async () => {
   } catch (error) {
     console.error("Failed to save biography:", error);
   }
-};
-
-const cancelEditing = () => {
-  isEditing.value = false; //編集モードを終了
-};
-
-//tag part2
-const addTag = () => {
-  tags.value.push("aaaa");
 };
 
 //本人確認
@@ -139,15 +144,14 @@ const getImageUrl = (name: string) => {
       </div>
     </div>
 
-    <div v-for="tag in tags.slice()" :key="tag">
-      <Tagbutton :tag="tag" />
+    <div class="tag-container">
+      <div class="tag-content" v-for="tag in tags.slice()" :key="tag">
+        <Tagbutton :tag="tag" />
+        <button class="delete-button" v-if="isEditing" @click="deleteTag(tag)">
+          ×
+        </button>
+      </div>
     </div>
-
-    <!--tag追加-->
-    <label>
-      tag名
-      <input v-model="newTag" type="text" />
-    </label>
 
     <!--profile表示-->
     <div v-if="!isEditing">
@@ -159,6 +163,12 @@ const getImageUrl = (name: string) => {
 
     <!--profile編集-->
     <div v-else>
+      <!--tag追加-->
+      <label>
+        新しいタグ名
+        <input class="tag-input" v-model="editTag" type="text" />
+      </label>
+      <button class="edit-button save-button" @click="addTag">追加</button>
       <div>
         <textarea v-model="editBiography"></textarea>
       </div>
@@ -209,7 +219,7 @@ textarea {
   width: 600px;
   height: 6%;
   border-radius: 40px;
-  border: 2px solid #e2e5e9;
+  border: 2px solid #d0d0d0;
   margin: 10px;
   padding: 20px;
   color: inherit;
@@ -231,5 +241,38 @@ textarea {
 .save-button {
   background-color: #005bac;
   color: white;
+}
+.delete-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: #e2e5e9;
+}
+.tag-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 10px;
+}
+.tag-content {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 5px;
+}
+.tag-input {
+  height: 36px;
+  padding: 0 20px;
+  color: inherit;
+  font: inherit;
+  border-radius: 18px;
+  border: 2px solid #d0d0d0;
+  margin: 0 10px 0 5px;
 }
 </style>
