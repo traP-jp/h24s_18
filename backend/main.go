@@ -59,9 +59,9 @@ func main() {
 	e := echo.New()
 
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		Skipper:      middleware.DefaultSkipper,
-		AllowOrigins: []string{"http://localhost:5173"},
-		AllowMethods: []string{http.MethodGet, http.MethodPatch, http.MethodPost, http.MethodDelete},
+		Skipper:          middleware.DefaultSkipper,
+		AllowOrigins:     []string{"http://localhost:5173"},
+		AllowMethods:     []string{http.MethodGet, http.MethodPatch, http.MethodPost, http.MethodDelete},
 		AllowCredentials: true,
 		AllowHeaders:     []string{echo.HeaderAccessControlAllowOrigin, echo.HeaderOrigin, echo.HeaderXHTTPMethodOverride, echo.HeaderContentType},
 	}))
@@ -77,6 +77,7 @@ func main() {
 	e.GET("/api/me", handler.GetMeHandler)
 	e.PATCH("/api/me", handler.PatchMe)
 	e.POST("/api/me/tags", handler.PostTag)
+	e.PATCH("api/me/tags", handler.UpdateTag)
 	e.DELETE("/api/me/tags", handler.DeleteTag)
 
 	// Webサーバーをポート番号8080で起動し、エラーが発生した場合はログにエラーメッセージを出力する
