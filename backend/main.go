@@ -73,6 +73,8 @@ func main() {
 	e.GET("/api/oauth2/callback", handler.CallbackHandler)
 	e.GET("/api/me", handler.GetMeHandler)
 	e.PATCH("/api/me", handler.PatchMe)
+	e.GET("/api/tags", handler.GetTags)
+	e.GET("/api/users", handler.FindUserByTag)
 	e.POST("/api/me/tags", handler.PostTag)
 	e.DELETE("/api/me/tags", handler.DeleteTag)
 

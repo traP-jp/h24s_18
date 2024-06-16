@@ -16,3 +16,12 @@ func GetTags(c echo.Context) error {
 	return c.JSON(http.StatusOK, tagname)
 
 }
+
+func FindUserByTag(c echo.Context) error {
+	q := c.QueryParam("q")
+	user, err := model.RecommendUserByTag(q)
+	if err != nil {
+		return err
+	}
+	return c.JSON(http.StatusOK, user)
+}
