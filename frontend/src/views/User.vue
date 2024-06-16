@@ -33,7 +33,7 @@ const getUserInfo = async () => {
   }
   const data = await res.json();
   biography.value = data.Bio;
-  xId.value = data.TwitterID;
+  xId.value = data.TwitterId;
   console.log(data);
 };
 
