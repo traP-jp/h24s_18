@@ -10,6 +10,9 @@ const biography = ref<string>("ここに自己紹介文が表示されます");
 const editBiography = ref<string>("");
 const isEditing = ref<boolean>(false);
 const userId = ref<string>(route.params.id as string);
+const tags = ref<string[]>(["23M", "aaa", "ハッカソンなう"]);
+
+const newTag = ref("");
 
 watch(
   () => route.params.id,
@@ -18,9 +21,8 @@ watch(
   }
 );
 
-const tangs = ref<string>("");
-const editTangs = ref<string>("");
-const isEditingTangs = ref<boolean>(false);
+const editTags = ref<string>("");
+const isEditingTags = ref<boolean>(false);
 
 //関数定義
 const startEditing = () => {
@@ -37,22 +39,10 @@ const cancelEditing = () => {
   isEditing.value = false; //編集モードを終了
 };
 
-//ここからtagns
-const startEditingTangs = () => {
-  editTangs.value = tangs.value; //現在のtagを編集用に設定
-  isEditingTangs.value = true;
+//tag part2
+const addTag = () => {
+  tags.value.push("aaaa");
 };
-
-const saveTangs = () => {
-  tangs.value = editTangs.value; //編集内容を保存
-  isEditingTangs.value = false; //編集モードを終了
-};
-
-const cancelEditingTangs = () => {
-  isEditingTangs.value = false; //編集モードを終了
-};
-
-const tags = ref<string[]>(["23M", "aaa", "ハッカソンなう"]);
 
 //本人確認
 import { store } from "../store";
@@ -110,34 +100,16 @@ const getImageUrl = (name: string) => {
         >
       </div>
     </div>
+
     <div v-for="tag in tags.slice()" :key="tag">
       <Tagbutton :tag="tag" />
     </div>
 
-    
-
-
-
-
-
-
-
-
-
-
-
-    <!--tag表示-->
-    <div v-if="!isEditingTangs">
-      <p>{{ tangs }}</p>
-      <button v-if="isMyPage" @click="startEditingTangs">tag追加</button>
-    </div>
-
     <!--tag追加-->
-    <div v-else>
-      <textarea v-model="editTangs"></textarea>
-      <button @click="saveTangs">保存</button>
-      <button @click="cancelEditingTangs">キャンセル</button>
-    </div>
+    <label>
+      tag名
+      <input v-model="newTag" type="text" />
+    </label>
 
     <!--profile表示-->
     <div v-if="!isEditing">
@@ -157,8 +129,6 @@ const getImageUrl = (name: string) => {
       </button>
       <button class="edit-button" @click="cancelEditing">キャンセル</button>
     </div>
-
-   
   </div>
 </template>
 
