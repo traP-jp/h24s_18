@@ -18,6 +18,22 @@ import (
 )
 
 func main() {
+
+	//ctx := context.Background()
+	//emb, err := gemini.GetEmbedding("せいかつ", ctx)
+	//if err != nil {
+	//	panic(err)
+	//}
+	//emb2, err := gemini.GetEmbedding("あそび", ctx)
+	//if err != nil {
+	//	panic(err)
+	//}
+	//
+	//fmt.Println(emb)
+	//fmt.Println(emb2)
+	//
+	//return
+
 	gob.Register(&oauth2.Token{})
 
 	user := os.Getenv("MARIADB_USERNAME")

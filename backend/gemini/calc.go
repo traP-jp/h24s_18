@@ -2,6 +2,7 @@ package gemini
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"strconv"
 	"strings"
@@ -16,7 +17,7 @@ const (
 
 type Embedding []float32
 
-func GetEmbedding(str string, ctx context.Context) (*Embedding, error) {
+func GetEmbedding(str string, ctx context.Context) (Embedding, error) {
 	client, err := genai.NewClient(ctx, option.WithAPIKey(os.Getenv("GEMINI_API_KEY")))
 	if err != nil {
 		return nil, err
@@ -25,14 +26,26 @@ func GetEmbedding(str string, ctx context.Context) (*Embedding, error) {
 
 	em := client.EmbeddingModel("text-embedding-004")
 
+	ctx = context.Background()
+
 	res, err := em.EmbedContent(ctx, genai.Text(str))
 	if err != nil {
 		panic(err)
 	}
 
-	emb := Embedding(res.Embedding.Values)
+	val := make([]float32, EmbeddingDimension)
 
-	return &emb, nil
+	in := copy(val, res.Embedding.Values)
+
+	fmt.Println(res.Embedding.Values)
+
+	fmt.Println(in)
+
+	emb := Embedding(val)
+
+	fmt.Println(emb[0], emb[1], str)
+
+	return emb, nil
 }
 
 func (emb *Embedding) String() string {
@@ -42,6 +55,11 @@ func (emb *Embedding) String() string {
 
 	}
 	return s[:len(s)-1]
+}
+
+func (emb *Embedding) len() int {
+	return len(*emb)
+
 }
 
 func ScanEmb(val string) (*Embedding, error) {

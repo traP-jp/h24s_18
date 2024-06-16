@@ -3,12 +3,11 @@ package model
 import (
 	"fmt"
 	"github.com/traP-jp/h24s_18/gemini"
-	"gorm.io/gorm"
 	"sort"
 )
 
 type User struct {
-	gorm.Model
+	model
 	Name          string
 	Id            string
 	Bio           string
@@ -50,8 +49,9 @@ type RecommendedUser struct {
 }
 
 type TagScore struct {
-	Name  string
-	Score float64
+	Name      string
+	IsStarred bool
+	Score     float64
 }
 
 func RecommendUserByTag(tagName string) ([]RecommendedUser, error) {
@@ -96,16 +96,16 @@ func RecommendUserByTag(tagName string) ([]RecommendedUser, error) {
 		}
 	}
 
-	var userTagMap = make(map[string][]string)
+	var userTagMap = make(map[string][]UserTag)
 
 	var userScoreMap = make(map[string]float64)
 
 	for _, userTag := range userTags {
 		if _, ok := userTagMap[userTag.UserId]; !ok {
-			userTagMap[userTag.UserId] = make([]string, 0)
+			userTagMap[userTag.UserId] = make([]UserTag, 0)
 			userScoreMap[userTag.UserId] = 0
 		}
-		userTagMap[userTag.UserId] = append(userTagMap[userTag.UserId], userTag.TagName)
+		userTagMap[userTag.UserId] = append(userTagMap[userTag.UserId], userTag)
 		similarity := gemini.CosineSimilarity(tagEmb, tagsMap[userTag.TagName])
 
 		score := 0.0
@@ -127,14 +127,15 @@ func RecommendUserByTag(tagName string) ([]RecommendedUser, error) {
 
 		tagRes := make([]TagScore, 0)
 		for _, tag := range userTagMap[user.Id] {
-			tagRes = append(tagRes, TagScore{Name: tag, Score: gemini.Dot(tagEmb, tagsMap[tag])})
+			tagRes = append(tagRes, TagScore{Name: tag.TagName, Score: gemini.Dot(tagEmb, tagsMap[tag.TagName]), IsStarred: tag.IsStarred})
 		}
 
 		sort.Slice(tagRes, func(i, j int) bool {
 			return tagRes[i].Score > tagRes[j].Score
 		})
 
-		res = append(res, RecommendedUser{User: user, Score: userScoreMap[user.Id], Tags: tagRes})
+		res = append(res, RecommendedUser{
+			User: user, Score: userScoreMap[user.Id], Tags: tagRes})
 	}
 
 	// sort

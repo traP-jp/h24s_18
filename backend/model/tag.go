@@ -1,12 +1,8 @@
 package model
 
-import (
-	"gorm.io/gorm"
-)
-
 type Tag struct {
-	gorm.Model
-	Name  string
+	model
+	Name  string `gorm:"primaryKey"`
 	Value string
 }
 
@@ -39,6 +35,3 @@ func GetAllTagsName() ([]string, error) {
 	}
 	return names, nil
 }
-
-
- 
