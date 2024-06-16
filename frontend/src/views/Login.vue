@@ -24,7 +24,7 @@ onMounted(async () => {
     router.push({ name: "User", params: { id: store.user.id } });
   } catch (error) {
     console.error(error);
-    //window.location.href = `${API_URL}/api/oauth2/authorize`;
+    window.location.href = `${API_URL}/api/oauth2/authorize`;
   }
 });
 </script>
