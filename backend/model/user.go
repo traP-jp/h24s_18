@@ -46,7 +46,12 @@ func UpdateUserBio(id string, bio string) {
 type RecommendedUser struct {
 	User  User
 	Score float32
-	Tags  []string
+	Tags  []TagScore
+}
+
+type TagScore struct {
+	Name  string
+	Score float32
 }
 
 func RecommendUserByTag(tagName string) ([]RecommendedUser, error) {
@@ -110,7 +115,17 @@ func RecommendUserByTag(tagName string) ([]RecommendedUser, error) {
 		if _, ok := userTagMap[user.Id]; !ok {
 			continue
 		}
-		res = append(res, RecommendedUser{User: user, Score: userScoreMap[user.Id], Tags: userTagMap[user.Id]})
+
+		tagRes := make([]TagScore, 0)
+		for _, tag := range userTagMap[user.Id] {
+			tagRes = append(tagRes, TagScore{Name: tag, Score: gemini.Dot(tagEmb, tagsMap[tag])})
+		}
+
+		sort.Slice(tagRes, func(i, j int) bool {
+			return tagRes[i].Score > tagRes[j].Score
+		})
+
+		res = append(res, RecommendedUser{User: user, Score: userScoreMap[user.Id], Tags: tagRes})
 	}
 
 	// sort
