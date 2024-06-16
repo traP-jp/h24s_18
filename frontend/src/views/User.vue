@@ -60,7 +60,7 @@ const startEditing = () => {
 
 const addTag = async () => {
   if (editTag.value === "") return;
-  const newTag: Tag = { name: editTag.value, isStarred: true };
+  const newTag: Tag = { name: editTag.value, isStarred: false };
   tags.value.push(newTag);
   editTag.value = "";
   try {
@@ -77,6 +77,26 @@ const addTag = async () => {
     getUserInfo();
   } catch (error) {
     console.error("Failed to add tag:", error);
+  }
+};
+
+const updateTag = (tag: Tag) => {
+  const newTag: Tag = { name: tag.name, isStarred: !tag.isStarred };
+  tags.value = tags.value.map((t) => (t.name === tag.name ? newTag : t));
+  try {
+    fetch(`${API_URL}/api/me/tags/${tag.name}`, {
+      method: "PATCH",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": API_URL,
+      },
+      body: JSON.stringify(newTag),
+    });
+    console.log("Tag updated");
+    getUserInfo();
+  } catch (error) {
+    console.error("Failed to update tag:", error);
   }
 };
 
@@ -178,7 +198,7 @@ const getImageUrl = (name: string) => {
 
     <div class="tag-container">
       <div class="tag-content" v-for="tag in tags.slice()" :key="tag.name">
-        <Tagbutton :tag="tag" />
+        <Tagbutton :tag="tag" :isEditing="isEditing" :onClick="updateTag" />
         <button class="delete-button" v-if="isEditing" @click="deleteTag(tag)">
           ×
         </button>

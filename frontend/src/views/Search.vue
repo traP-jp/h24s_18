@@ -66,7 +66,7 @@ watch(
         </div>
         <div class="usertag">
           <div v-for="tag in user.tags.slice()" :key="tag.name" class="Tag">
-            <Tagbutton :tag="tag" />
+            <Tagbutton :tag="tag" :isEditing="false" :onClick="() => {}" />
           </div>
         </div>
       </div>

@@ -1,26 +1,32 @@
 <script setup lang="ts">
 import { useRouter } from "vue-router";
 import { Tag } from "../store";
+import { computed, defineProps } from "vue";
 
-defineProps<{
+const props = defineProps<{
   tag: Tag;
+  isEditing: boolean;
+  onClick: (tag: Tag) => void;
 }>();
 const router = useRouter();
-const navigateTo = (tag: string) => {
-  // クエリパラメータを指定してページ遷移する
-  router.push({ name: "Search", query: { q: tag } });
+const onClick = (tag: Tag) => {
+  if (props.isEditing) {
+    props.onClick(tag);
+  } else {
+    router.push({ name: "Search", query: { q: tag.name } });
+  }
 };
+const classNames = computed(() => {
+  return {
+    "tag-button": true,
+    "tag-button-starred": props.tag.isStarred,
+    "tag-button-editing": props.isEditing,
+  };
+});
 </script>
 
 <template>
-  <button
-    v-if="tag.isStarred"
-    class="tag-button tag-button-starred"
-    @click="navigateTo(tag.name)"
-  >
-    #&nbsp;{{ tag.name }}
-  </button>
-  <button v-else class="tag-button" @click="navigateTo(tag.name)">
+  <button :class="classNames" @click="onClick(tag)">
     #&nbsp;{{ tag.name }}
   </button>
 </template>
@@ -43,6 +49,10 @@ const navigateTo = (tag: string) => {
   background-color: #005bac;
   color: white;
   border-color: #005bac;
+}
+.tag-button-editing:hover {
+  background-color: #f2ba4a;
+  border-color: #f2ba4a;
 }
 .tag-button-starred {
   background-color: rgba(242, 186, 74, 0.2);
