@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, onMounted, watch } from "vue";
 import Tagbutton from "../components/Tagbutton.vue";
 import UserIcon from "../components/UserIcon.vue";
+import { useRoute } from "vue-router";
+import { API_URL } from "../store";
 
 interface User {
   name: string;
@@ -13,6 +15,44 @@ const userData = ref<User[]>([
   { name: "aya_se", tags: ["23M"] },
   { name: "eru_o2lo", tags: ["24B"] },
 ]);
+const route = useRoute();
+const userTag = ref<string>(route.query.q as string);
+
+const getUserInfo = async () => {
+  const res = await fetch(`${API_URL}/api/users?q=${userTag.value}`, {
+    method: "GET",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": API_URL,
+    },
+  });
+  if (!res.ok) {
+    throw new Error("Failed to fetch user info");
+  }
+  const data = await res.json();
+
+  console.log(data);
+  userData.value = data.map((user: any) => ({
+      name: user.Name,
+      tags: user.Tag,
+    }));
+ 
+  
+  
+};
+
+onMounted(() => {
+  getUserInfo();
+});
+
+watch(
+  () => route.query.q,
+  (newId: any) => {
+    userTag.value = newId as string;
+    getUserInfo();
+  }
+);
 </script>
 
 <template>
