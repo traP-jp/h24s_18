@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { useRouter } from "vue-router";
+import { Tag } from "../store";
 
 defineProps<{
-  tag: string;
+  tag: Tag;
 }>();
 const router = useRouter();
 const navigateTo = (tag: string) => {
@@ -12,7 +13,9 @@ const navigateTo = (tag: string) => {
 </script>
 
 <template>
-  <button class="tag-button" @click="navigateTo(tag)">#&nbsp;{{ tag }}</button>
+  <button class="tag-button" @click="navigateTo(tag.name)">
+    #&nbsp;{{ tag.name }}
+  </button>
 </template>
 
 <style scoped>

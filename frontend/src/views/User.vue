@@ -3,14 +3,14 @@ import Tagbutton from "../components/Tagbutton.vue";
 import { ref, computed, watch, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import UserIcon from "../components/UserIcon.vue";
-import { API_URL } from "../store";
+import { API_URL, Tag } from "../store";
 
 //プロフィールデータ
 const route = useRoute();
 const userId = ref<string>(route.params.id as string);
 
 const biography = ref<string>("");
-const tags = ref<string[]>(["23M", "aaa", "ハッカソンなう"]);
+const tags = ref<Tag[]>([]);
 
 const editBiography = ref<string>("");
 const editTag = ref("");
@@ -34,6 +34,9 @@ const getUserInfo = async () => {
   const data = await res.json();
   biography.value = data.Bio;
   xId.value = data.TwitterId;
+  tags.value = data.Tag.map((tag: any) => {
+    return { name: tag.TagName, isStared: tag.IsStared };
+  });
   console.log(data);
 };
 
@@ -55,14 +58,42 @@ const startEditing = () => {
   isEditing.value = true;
 };
 
-const addTag = () => {
+const addTag = async () => {
   if (editTag.value === "") return;
-  tags.value.push(editTag.value);
+  const newTag: Tag = { name: editTag.value, isStared: false };
+  tags.value.push(newTag);
   editTag.value = "";
+  try {
+    await fetch(`${API_URL}/api/me/tags`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": API_URL,
+      },
+      body: JSON.stringify(newTag),
+    });
+    console.log("Tag added");
+  } catch (error) {
+    console.error("Failed to add tag:", error);
+  }
 };
 
-const deleteTag = (tag: string) => {
-  tags.value = tags.value.filter((t) => t !== tag);
+const deleteTag = (tag: Tag) => {
+  tags.value = tags.value.filter((t) => t.name !== tag.name);
+  try {
+    fetch(`${API_URL}/api/me/tags/${tag.name}`, {
+      method: "DELETE",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": API_URL,
+      },
+    });
+    console.log("Tag deleted");
+  } catch (error) {
+    console.error("Failed to delete tag:", error);
+  }
 };
 
 const cancelEditing = () => {
@@ -145,7 +176,7 @@ const getImageUrl = (name: string) => {
     </div>
 
     <div class="tag-container">
-      <div class="tag-content" v-for="tag in tags.slice()" :key="tag">
+      <div class="tag-content" v-for="tag in tags.slice()" :key="tag.name">
         <Tagbutton :tag="tag" />
         <button class="delete-button" v-if="isEditing" @click="deleteTag(tag)">
           ×

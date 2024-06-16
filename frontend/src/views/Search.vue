@@ -3,18 +3,14 @@ import { ref, onMounted, watch } from "vue";
 import Tagbutton from "../components/Tagbutton.vue";
 import UserIcon from "../components/UserIcon.vue";
 import { useRoute } from "vue-router";
-import { API_URL } from "../store";
+import { API_URL, Tag } from "../store";
 
 interface User {
-  name: string;
-  tags: string[]; // tags を文字列の配列として定義する
+  id: string;
+  tags: Tag[];
 }
 
-const userData = ref<User[]>([
-  { name: "mumumu", tags: ["24B", "aaa", "ハッカソンなう"] }, // tags を配列で指定する
-  { name: "aya_se", tags: ["23M"] },
-  { name: "eru_o2lo", tags: ["24B"] },
-]);
+const userData = ref<User[]>([]);
 const route = useRoute();
 const userTag = ref<string>(route.query.q as string);
 
@@ -31,15 +27,13 @@ const getUserInfo = async () => {
     throw new Error("Failed to fetch user info");
   }
   const data = await res.json();
-
   console.log(data);
-  userData.value = data.map((user: any) => ({
-      name: user.Name,
-      tags: user.Tag,
-    }));
- 
-  
-  
+  userData.value = data.map((item: any) => ({
+    id: item.User.Id,
+    tags: item.Tags.map((tag: any) => {
+      return { name: tag.Name, isStared: tag.IsStared };
+    }),
+  }));
 };
 
 onMounted(() => {
@@ -61,17 +55,17 @@ watch(
       <strong># {{ $route.query.q }}</strong
       >&nbsp;の検索結果
     </div>
-    <div class="user-list" v-for="user in userData.slice()" :key="user.name">
+    <div class="user-list" v-for="user in userData" :key="user.id">
       <div class="user">
         <div class="username">
-          <RouterLink :to="{ name: 'User', params: { id: user.name } }"
-            ><UserIcon :userId="user.name" :size="90"
+          <RouterLink :to="{ name: 'User', params: { id: user.id } }"
+            ><UserIcon :userId="user.id" :size="90"
           /></RouterLink>
 
-          <strong>@{{ user.name }}</strong>
+          <strong>@{{ user.id }}</strong>
         </div>
         <div class="usertag">
-          <div v-for="tag in user.tags.slice()" :key="tag" class="Tag">
+          <div v-for="tag in user.tags.slice()" :key="tag.name" class="Tag">
             <Tagbutton :tag="tag" />
           </div>
         </div>
