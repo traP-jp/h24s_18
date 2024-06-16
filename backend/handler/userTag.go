@@ -135,8 +135,17 @@ func UpdateUserTag(c echo.Context) error {
 }
 
 func DeleteUserTag(c echo.Context) error {
+	u, _, err := getMe(c)
+
+	if err != nil {
+		if errors.Is(err, errUnauthorized) {
+			return c.String(http.StatusUnauthorized, "unauthorized")
+		}
+		return err
+	}
+
 	tagName := c.Param("tagName")
-	err := model.DeleteUserTag(tagName) // サーバー起因のエラー
+	err = model.DeleteUserTag(u.Name, tagName) // サーバー起因のエラー
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("%+v", err))
 	}
