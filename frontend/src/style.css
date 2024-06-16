@@ -2,10 +2,7 @@
   font-family: "M PLUS 1p", sans-serif;
   line-height: 1.5;
   font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color: #49535b;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -15,27 +12,19 @@
 
 a {
   text-decoration: inherit;
+  color: #005bac;
+  &:hover {
+    color: #0066cc;
+  }
 }
 
 body {
   margin: 0;
   place-items: center;
   min-height: 100vh;
-  min-width: 100vw;
 }
 
 #app {
-  min-width: 100vw;
   margin: 0 auto;
   text-align: center;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
 }

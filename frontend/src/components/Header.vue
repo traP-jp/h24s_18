@@ -1,41 +1,25 @@
 <script setup lang="ts">
 import { RouterLink } from "vue-router";
 import { store } from "../store";
-import router from "../router";
-
-const logout = () => {
-  store.user.id = "";
-  router.push({ name: "Login" });
-};
+import UserIcon from "../components/UserIcon.vue";
 </script>
 
 <template>
   <div class="header">
-    <div v-if="store.user.id">
-      <RouterLink
-        class="header-button"
-        :to="{ name: 'User', params: { id: store.user.id } }"
-        ><strong>traPハッカソン2024春18班</strong></RouterLink
-      >
-    </div>
-    <div v-else>
-      <RouterLink class="header-button" :to="{ name: 'Login' }"
-        ><strong>traPハッカソン2024春18班</strong></RouterLink
-      >
-    </div>
+    <RouterLink
+      class="header-title"
+      :to="
+        store.user.id
+          ? { name: 'User', params: { id: store.user.id } }
+          : { name: 'Login' }
+      "
+      >traPハッカソン2024春18班</RouterLink
+    >
     <div class="header-contents">
       <div v-if="store.user.id">
-        <RouterLink
-          class="header-button"
-          :to="{ name: 'User', params: { id: store.user.id } }"
-          >ユーザーページ</RouterLink
-        >
-        <RouterLink
-          class="header-button"
-          :to="{ name: 'Search', query: { q: 'SysAd' } }"
-          >検索ページ</RouterLink
-        >
-        <button class="header-button" @click="logout">ログアウト</button>
+        <RouterLink :to="{ name: 'User', params: { id: store.user.id } }"
+          ><UserIcon :userId="store.user.id" :size="45"
+        /></RouterLink>
       </div>
     </div>
   </div>
@@ -43,13 +27,10 @@ const logout = () => {
 
 <style scoped>
 .header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 40px;
+  height: 50px;
   width: 100%;
-  padding: 0 20px;
-  border-bottom: 1px solid #ccc;
+  padding: 0;
+  border-bottom: 1px solid #e2e5e9;
   padding: 10px 20px;
   display: flex;
   flex-wrap: wrap;
@@ -61,10 +42,12 @@ const logout = () => {
   flex-wrap: wrap;
   justify-content: right;
   align-items: center;
-  padding-right: 40px;
+  padding-right: 60px;
 }
-.header-button {
-  color: #333;
+.header-title {
+  color: #005bac;
+  font-size: 20px !important;
+  font-weight: bold;
   background: none;
   border: none;
   cursor: pointer;
@@ -72,7 +55,7 @@ const logout = () => {
   margin: 0 10px;
   padding: 0;
 }
-.header-button:hover {
-  color: #005bac;
+.header-title:hover {
+  color: #0066cc;
 }
 </style>
