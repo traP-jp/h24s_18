@@ -1,10 +1,20 @@
 package handler
 
 import (
+	"net/http"
+
 	"github.com/labstack/echo/v4"
 	"github.com/traP-jp/h24s_18/model"
-	"net/http"
 )
+
+type GetUserResponse struct {
+	Name          string
+	ID            string
+	Bio           string
+	TwitterID     string
+	HomeChannelId string
+	Tag           []model.UserTag
+}
 
 func GetUser(c echo.Context) error {
 	userid := c.Param("userId")
@@ -12,5 +22,19 @@ func GetUser(c echo.Context) error {
 	if err != nil {
 		return err
 	}
-	return c.JSON(http.StatusOK, user)
+
+	tags, err := model.GetUserTagsByUserId(userid)
+	if err != nil {
+		return err
+	}
+
+	response := GetUserResponse{
+		Name:          user.Name,
+		ID:            user.Id,
+		Bio:           user.Bio,
+		TwitterID:     user.TwitterId,
+		HomeChannelId: user.HomeChannelId,
+		Tag : tags,
+	}
+	return c.JSON(http.StatusOK, response)
 }
