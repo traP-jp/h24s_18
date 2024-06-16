@@ -106,5 +106,9 @@ func CallbackHandler(c echo.Context) error {
 	}
 
 	// return c.String(http.StatusOK, "success")
-	return c.Redirect(http.StatusFound, "http://localhost:5173")
+	redirectURL := os.Getenv("FRONTEND_URL")
+	if redirectURL == "" {
+		redirectURL = "http://localhost:5173"
+	}
+	return c.Redirect(http.StatusFound, redirectURL)
 }
