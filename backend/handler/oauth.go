@@ -2,7 +2,6 @@ package handler
 
 import (
 	"crypto/rand"
-	"errors"
 	"fmt"
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo/v4"
@@ -28,26 +27,6 @@ var (
 
 	store = sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
 )
-
-func GetMeHandler(c echo.Context) error {
-	//ログインしてたらuserが返ってくる
-	u, _, err := getMe(c)
-	//もしエラーだったら
-	if err != nil {
-		if errors.Is(err, errUnauthorized) {
-			return c.String(http.StatusUnauthorized, "unauthorized")
-		}
-		return err
-	}
-	//エラーじゃなかったら、データベースにユーザーの情報を問い合わせる
-	user, err := model.GetUser(u.Name)
-	//エラーだったら
-	if err != nil {
-		return err
-	}
-	//データベースから帰ってきたのを出力
-	return c.JSON(http.StatusOK, user)
-}
 
 func AuthorizeHandler(c echo.Context) error {
 	session, err := store.Get(c.Request(), sessionName)
