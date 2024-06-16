@@ -35,7 +35,7 @@ const getUserInfo = async () => {
   biography.value = data.Bio;
   xId.value = data.TwitterId;
   tags.value = data.Tag.map((tag: any) => {
-    return { name: tag.TagName, isStared: tag.IsStared };
+    return { name: tag.TagName, isStarred: tag.IsStarred };
   });
   console.log(data);
 };
@@ -60,7 +60,7 @@ const startEditing = () => {
 
 const addTag = async () => {
   if (editTag.value === "") return;
-  const newTag: Tag = { name: editTag.value, isStared: false };
+  const newTag: Tag = { name: editTag.value, isStarred: true };
   tags.value.push(newTag);
   editTag.value = "";
   try {
@@ -74,6 +74,7 @@ const addTag = async () => {
       body: JSON.stringify(newTag),
     });
     console.log("Tag added");
+    getUserInfo();
   } catch (error) {
     console.error("Failed to add tag:", error);
   }

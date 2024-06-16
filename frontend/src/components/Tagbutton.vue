@@ -13,7 +13,14 @@ const navigateTo = (tag: string) => {
 </script>
 
 <template>
-  <button class="tag-button" @click="navigateTo(tag.name)">
+  <button
+    v-if="tag.isStarred"
+    class="tag-button tag-button-starred"
+    @click="navigateTo(tag.name)"
+  >
+    #&nbsp;{{ tag.name }}
+  </button>
+  <button v-else class="tag-button" @click="navigateTo(tag.name)">
     #&nbsp;{{ tag.name }}
   </button>
 </template>
@@ -36,5 +43,9 @@ const navigateTo = (tag: string) => {
   background-color: #005bac;
   color: white;
   border-color: #005bac;
+}
+.tag-button-starred {
+  background-color: rgba(242, 186, 74, 0.2);
+  border-color: rgb(242, 186, 74);
 }
 </style>

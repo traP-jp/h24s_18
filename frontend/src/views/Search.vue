@@ -31,7 +31,7 @@ const getUserInfo = async () => {
   userData.value = data.map((item: any) => ({
     id: item.User.Id,
     tags: item.Tags.map((tag: any) => {
-      return { name: tag.Name, isStared: tag.IsStared };
+      return { name: tag.Name, isStarred: tag.IsStarred };
     }),
   }));
 };
