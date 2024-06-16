@@ -54,9 +54,9 @@ func GetMeHandler(c echo.Context) error {
 
 	response := GetUserResponse{
 		Name:          user.Name,
-		ID:            user.Id,
+		Id:            user.Id,
 		Bio:           user.Bio,
-		TwitterID:     user.TwitterId,
+		TwitterId:     user.TwitterId,
 		HomeChannelId: user.HomeChannelId,
 		Tag:           tags,
 	}

@@ -9,9 +9,9 @@ import (
 
 type GetUserResponse struct {
 	Name          string
-	ID            string
+	Id            string
 	Bio           string
-	TwitterID     string
+	TwitterId     string
 	HomeChannelId string
 	Tag           []model.UserTag
 }
@@ -30,9 +30,9 @@ func GetUser(c echo.Context) error {
 
 	response := GetUserResponse{
 		Name:          user.Name,
-		ID:            user.Id,
+		Id:            user.Id,
 		Bio:           user.Bio,
-		TwitterID:     user.TwitterId,
+		TwitterId:     user.TwitterId,
 		HomeChannelId: user.HomeChannelId,
 		Tag:           tags,
 	}
