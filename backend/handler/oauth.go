@@ -126,5 +126,6 @@ func CallbackHandler(c echo.Context) error {
 		return err
 	}
 
-	return c.String(http.StatusOK, "success")
+	// return c.String(http.StatusOK, "success")
+	return c.Redirect(http.StatusFound, "http://localhost:5173")
 }
