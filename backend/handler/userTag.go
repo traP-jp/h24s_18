@@ -18,7 +18,7 @@ type PostTagRequest struct {
 	IsStarred bool   `json:"isStarred" binding:"required"`
 }
 
-func PostTag(c echo.Context) error {
+func PostUserTag(c echo.Context) error {
 	u, _, err := getMe(c)
 
 	if err != nil {
@@ -38,7 +38,7 @@ func PostTag(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("%+v", err))
 	}
 
-	err = insertTag(u, *body, c)
+	err = insertUserTag(u, *body, c)
 
 	if err != nil {
 		return err
@@ -48,7 +48,7 @@ func PostTag(c echo.Context) error {
 	return c.JSON(http.StatusOK, body)
 }
 
-func insertTag(u *traq.MyUserDetail, body PostTagRequest, c echo.Context) error {
+func insertUserTag(u *traq.MyUserDetail, body PostTagRequest, c echo.Context) error {
 	err := model.CreateUserTag(u.Name, body.TagName, body.IsStarred)
 
 	if err != nil {
@@ -78,7 +78,7 @@ func insertTag(u *traq.MyUserDetail, body PostTagRequest, c echo.Context) error 
 
 type BulkInsertTagsRequest []PostTagRequest
 
-func BulkInsertTags(c echo.Context) error {
+func BulkInsertUserTags(c echo.Context) error {
 	u, _, err := getMe(c)
 
 	if err != nil {
@@ -99,7 +99,7 @@ func BulkInsertTags(c echo.Context) error {
 	}
 
 	for _, tag := range *body {
-		err = insertTag(u, tag, c)
+		err = insertUserTag(u, tag, c)
 		if err != nil {
 			return err
 		}
@@ -109,7 +109,7 @@ func BulkInsertTags(c echo.Context) error {
 	return c.JSON(http.StatusOK, body)
 }
 
-func UpdateTag(c echo.Context) error {
+func UpdateUserTag(c echo.Context) error {
 	u, _, err := getMe(c)
 
 	if err != nil {
@@ -134,7 +134,7 @@ func UpdateTag(c echo.Context) error {
 	return c.JSON(http.StatusOK, body)
 }
 
-func DeleteTag(c echo.Context) error {
+func DeleteUserTag(c echo.Context) error {
 	tagName := c.Param("tagName")
 	err := model.DeleteUserTag(tagName) // サーバー起因のエラー
 	if err != nil {
