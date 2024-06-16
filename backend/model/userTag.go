@@ -17,8 +17,15 @@ func CreateUserTag(userId string, tagName string, isStarred bool) error {
 // UserIdからそのユーザの持つUserTagを生成
 func GetUserTagsByUserId(userId string) ([]UserTag, error) {
 	var userTag []UserTag
-	result := db.Find(&userTag, "user_id = ?", userId)
+	result := db.Find(&userTag, "user_id = ?", userId) // db の user_id が userId のものを取得
 	return userTag, result.Error
+}
+
+// userTag につけられている isStarred を変える
+func UpdateUserTags(userId string, tagName string, isStarred bool) error {
+	var userTag []UserTag
+	result := db.Model(&userTag).Where("user_id = ?", userId).Where("tag_name = ?", tagName).Update("is_starred", isStarred)
+	return result.Error
 }
 
 // UserTagを削除
