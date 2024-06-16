@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/traP-jp/h24s_18/gemini"
+	"github.com/traPtitech/go-traq"
 	"gorm.io/gorm"
 	"net/http"
 
@@ -36,7 +37,18 @@ func PostTag(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("%+v", err))
 	}
 
-	err = model.CreateUserTag(u.Name, body.TagName, body.IsStarred)
+	err = insertTag(u, *body, c)
+
+	if err != nil {
+		return err
+	}
+
+	// エラーが起きなかったとき、正常なのでステータスコード 200 OK を返し、リクエストデータをそのまま返す
+	return c.JSON(http.StatusOK, body)
+}
+
+func insertTag(u *traq.MyUserDetail, body PostTagRequest, c echo.Context) error {
+	err := model.CreateUserTag(u.Name, body.TagName, body.IsStarred)
 
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("%+v", err))
@@ -58,6 +70,38 @@ func PostTag(c echo.Context) error {
 		}
 	} else {
 		// do nothing
+	}
+
+	return nil
+}
+
+type BulkInsertTagsRequest []PostTagRequest
+
+func BulkInsertTags(c echo.Context) error {
+	u, _, err := getMe(c)
+
+	if err != nil {
+		if errors.Is(err, errUnauthorized) {
+			return c.String(http.StatusUnauthorized, "unauthorized")
+		}
+		return err
+	}
+
+	// 受け取りたい JSON を示す空の変数を先に用意する。
+	body := &BulkInsertTagsRequest{}
+	// 受け取った JSON を data に代入する
+	err = c.Bind(body)
+
+	if err != nil { // エラーが発生した時、以下を実行
+		// 正常でないためステータスコード 400 Bad Requestを返し、 エラーを文字列に変換して出力
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("%+v", err))
+	}
+
+	for _, tag := range *body {
+		err = insertTag(u, tag, c)
+		if err != nil {
+			return err
+		}
 	}
 
 	// エラーが起きなかったとき、正常なのでステータスコード 200 OK を返し、リクエストデータをそのまま返す
