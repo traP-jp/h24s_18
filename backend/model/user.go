@@ -3,6 +3,7 @@ package model
 import (
 	"fmt"
 	"github.com/traP-jp/h24s_18/gemini"
+	"math"
 	"sort"
 )
 
@@ -96,26 +97,26 @@ func RecommendUserByTag(tagName string) ([]RecommendedUser, error) {
 		}
 	}
 
-	var userTagMap = make(map[string][]UserTag)
+	var tagSimilarityMap = make(map[string]float64)
+	{
+		for key, tag := range tagsMap {
+			similarity := gemini.CosineSimilarity(tagEmb, tag)
+			fmt.Printf("similarity: %f\n", similarity)
+			tagSimilarityMap[key] = similarity
+		}
+	}
 
-	var userScoreMap = make(map[string]float64)
+	var userTagMap = make(map[string][]TagScore)
 
 	for _, userTag := range userTags {
 		if _, ok := userTagMap[userTag.UserId]; !ok {
-			userTagMap[userTag.UserId] = make([]UserTag, 0)
-			userScoreMap[userTag.UserId] = 0
+			userTagMap[userTag.UserId] = make([]TagScore, 0)
 		}
-		userTagMap[userTag.UserId] = append(userTagMap[userTag.UserId], userTag)
-		similarity := gemini.CosineSimilarity(tagEmb, tagsMap[userTag.TagName])
-
-		score := 0.0
-		switch {
-		case similarity > 0:
-			score = similarity
-		case similarity < 0:
-			score = 0
-		}
-		userScoreMap[userTag.UserId] += score
+		userTagMap[userTag.UserId] = append(userTagMap[userTag.UserId], TagScore{
+			Name:      userTag.TagName,
+			IsStarred: userTag.IsStarred,
+			Score:     tagSimilarityMap[userTag.TagName],
+		})
 	}
 
 	res := make([]RecommendedUser, 0)
@@ -125,17 +126,22 @@ func RecommendUserByTag(tagName string) ([]RecommendedUser, error) {
 			continue
 		}
 
-		tagRes := make([]TagScore, 0)
-		for _, tag := range userTagMap[user.Id] {
-			tagRes = append(tagRes, TagScore{Name: tag.TagName, Score: gemini.Dot(tagEmb, tagsMap[tag.TagName]), IsStarred: tag.IsStarred})
-		}
+		t := userTagMap[user.Id]
 
-		sort.Slice(tagRes, func(i, j int) bool {
-			return tagRes[i].Score > tagRes[j].Score
+		sort.Slice(t, func(i, j int) bool {
+			return t[i].Score > t[j].Score
 		})
 
+		score := 0.0
+		for i, v := range t {
+			score += v.Score * math.Pow(0.8, float64(i))
+		}
+
 		res = append(res, RecommendedUser{
-			User: user, Score: userScoreMap[user.Id], Tags: tagRes})
+			User:  user,
+			Score: score,
+			Tags:  t,
+		})
 	}
 
 	// sort
