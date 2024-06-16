@@ -31,6 +31,7 @@ func PatchMe(c echo.Context) error {
 	return c.NoContent(http.StatusOK)
 }
 
+
 func GetMeHandler(c echo.Context) error {
 	//ログインしてたらuserが返ってくる
 	u, _, err := getMe(c)
@@ -47,6 +48,20 @@ func GetMeHandler(c echo.Context) error {
 	if err != nil {
 		return err
 	}
+	tags, err := model.GetUserTagsByUserId(u.Name)
+	if err != nil {
+		return err
+	}
+
+	response := GetUserResponse{
+		Name:          user.Name,
+		ID:            user.Id,
+		Bio:           user.Bio,
+		TwitterID:     user.TwitterId,
+		HomeChannelId: user.HomeChannelId,
+		Tag : tags,
+	}
+
 	//データベースから帰ってきたのを出力
-	return c.JSON(http.StatusOK, user)
+	return c.JSON(http.StatusOK, response)
 }
