@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Tagbutton from "../components/Tagbutton.vue";
-import { ref, computed } from "vue";
+import { ref, computed, devtools } from "vue";
 import { useRoute } from "vue-router";
 
 //プロフィールデータ
@@ -8,6 +8,10 @@ const route = useRoute();
 const biography = ref<string>("ここに自己紹介文が表示されます");
 const editBiography = ref<string>("");
 const isEditing = ref<boolean>(false);
+
+const tangs = ref<string>("");
+const editTangs = ref<string>("");
+const isEditingTangs = ref<boolean>(false);
 
 //関数定義
 const startEditing = () => {
@@ -24,7 +28,23 @@ const cancelEditing = () => {
   isEditing.value = false; //編集モードを終了
 };
 
+//ここからtagns
+const startEditingTangs = () => {
+  editTangs.value = tangs.value; //現在のtagを編集用に設定
+  isEditingTangs.value = true;
+};
+
+const saveTangs = () => {
+  tangs.value = editTangs.value; //編集内容を保存
+  isEditingTangs.value = false; //編集モードを終了
+};
+
+const cancelEditingTangs = () => {
+  isEditingTangs.value = false; //編集モードを終了
+};
+
 const tags = ref<string[]>(["23M", "aaa", "ハッカソンなう"]);
+
 //本人確認
 import { store } from "../store";
 const isMyPage = computed(() => {
@@ -82,18 +102,46 @@ const isMyPage = computed(() => {
     <div v-for="tag in tags.slice()" :key="tag">
       <Tagbutton :tag="tag" />
     </div>
-    <!-profile表示->
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!--tag表示-->
+    <div v-if="!isEditingTangs">
+      <p>{{ tangs }}</p>
+      <button v-if="isMyPage" @click="startEditingTangs">tag追加</button>
+    </div>
+
+    <!--tag追加-->
+    <div v-else>
+      <textarea v-model="editTangs"></textarea>
+      <button @click="saveTangs">保存</button>
+      <button @click="cancelEditingTangs">キャンセル</button>
+    </div>
+
+    <!--profile表示-->
     <div v-if="!isEditing">
       <p>{{ biography }}</p>
       <button v-if="isMyPage" @click="startEditing">編集</button>
     </div>
 
-    <!-profile編集->
+    <!--profile編集-->
     <div v-else>
       <textarea v-model="editBiography"></textarea>
       <button @click="saveBiography">保存</button>
       <button @click="cancelEditing">キャンセル</button>
     </div>
+
+   
   </div>
 </template>
 
