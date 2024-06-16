@@ -34,7 +34,7 @@ func GetUser(c echo.Context) error {
 		Bio:           user.Bio,
 		TwitterID:     user.TwitterId,
 		HomeChannelId: user.HomeChannelId,
-		Tag : tags,
+		Tag:           tags,
 	}
 	return c.JSON(http.StatusOK, response)
 }
