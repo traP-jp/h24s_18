@@ -78,6 +78,7 @@ func main() {
 	e.GET("/api/tags", handler.GetTags)
 	e.GET("/api/users", handler.FindUserByTag)
 	e.POST("/api/me/tags", handler.PostTag)
+	e.POST("/api/me/tags/bulk", handler.BulkInsertTags)
 	e.PATCH("api/me/tags", handler.UpdateTag)
 	e.DELETE("/api/me/tags/:tagName", handler.DeleteTag)
 
