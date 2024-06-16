@@ -1,21 +1,21 @@
 package gemini
 
-func Dot(a Embedding, b Embedding) float32 {
-	var sum float32
+func Dot(a Embedding, b Embedding) float64 {
+	var sum float64
 	for i := range a {
-		sum += a[i] * b[i]
+		sum += float64(a[i] * b[i])
 	}
 	return sum
 }
 
-func Norm(a Embedding) float32 {
-	var sum float32
+func Norm(a Embedding) float64 {
+	var sum float64
 	for _, v := range a {
-		sum += v * v
+		sum += float64(v * v)
 	}
 	return sum
 }
 
-func CosineSimilarity(a Embedding, b Embedding) float32 {
+func CosineSimilarity(a Embedding, b Embedding) float64 {
 	return Dot(a, b) / (Norm(a) * Norm(b))
 }

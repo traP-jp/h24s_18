@@ -45,13 +45,13 @@ func UpdateUserBio(id string, bio string) {
 
 type RecommendedUser struct {
 	User  User
-	Score float32
+	Score float64
 	Tags  []TagScore
 }
 
 type TagScore struct {
 	Name  string
-	Score float32
+	Score float64
 }
 
 func RecommendUserByTag(tagName string) ([]RecommendedUser, error) {
@@ -98,7 +98,7 @@ func RecommendUserByTag(tagName string) ([]RecommendedUser, error) {
 
 	var userTagMap = make(map[string][]string)
 
-	var userScoreMap = make(map[string]float32)
+	var userScoreMap = make(map[string]float64)
 
 	for _, userTag := range userTags {
 		if _, ok := userTagMap[userTag.UserId]; !ok {
@@ -106,7 +106,16 @@ func RecommendUserByTag(tagName string) ([]RecommendedUser, error) {
 			userScoreMap[userTag.UserId] = 0
 		}
 		userTagMap[userTag.UserId] = append(userTagMap[userTag.UserId], userTag.TagName)
-		userScoreMap[userTag.UserId] += gemini.Dot(tagEmb, tagsMap[userTag.TagName])
+		similarity := gemini.CosineSimilarity(tagEmb, tagsMap[userTag.TagName])
+
+		score := 0.0
+		switch {
+		case similarity > 0:
+			score = similarity
+		case similarity < 0:
+			score = 0
+		}
+		userScoreMap[userTag.UserId] += score
 	}
 
 	res := make([]RecommendedUser, 0)
