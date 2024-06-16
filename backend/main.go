@@ -2,14 +2,16 @@ package main
 
 import (
 	"encoding/gob"
-	"golang.org/x/oauth2"
 	"net/http"
 
+	"golang.org/x/oauth2"
+
 	//"github.com/google/generative-ai-go/genai"
+	"os"
+
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/traP-jp/h24s_18/model"
-	"os"
 
 	"github.com/traP-jp/h24s_18/handler"
 	//"google.golang.org/api/option"
@@ -78,7 +80,7 @@ func main() {
 	e.POST("/api/me/tags", handler.PostTag)
 	e.POST("/api/me/tags/bulk", handler.BulkInsertTags)
 	e.PATCH("api/me/tags", handler.UpdateTag)
-	e.DELETE("/api/me/tags", handler.DeleteTag)
+	e.DELETE("/api/me/tags/:tagName", handler.DeleteTag)
 
 	// Webサーバーをポート番号8080で起動し、エラーが発生した場合はログにエラーメッセージを出力する
 	e.Logger.Fatal(e.Start(":8080"))
