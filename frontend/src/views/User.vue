@@ -60,6 +60,15 @@ const startEditing = () => {
 
 const addTag = async () => {
   if (editTag.value === "") return;
+  // 英数字以外の文字を含む場合は追加しない
+  if (!editTag.value.match(/^[0-9a-zA-Z]+$/)) {
+    editTag.value = "";
+    // アラートを表示する
+    window.alert(
+      "英数字以外の文字は現在タグ名に使用できません（Geminiが悪いです）"
+    );
+    return;
+  }
   const newTag: Tag = { name: editTag.value, isStarred: false };
   tags.value.push(newTag);
   editTag.value = "";
