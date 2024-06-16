@@ -1,10 +1,10 @@
 package handler
 
 import (
-	"database/sql"
 	"errors"
 	"fmt"
 	"github.com/traP-jp/h24s_18/gemini"
+	"gorm.io/gorm"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -44,7 +44,7 @@ func PostTag(c echo.Context) error {
 
 	_, err = model.GetTag(body.TagName)
 	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
 			value, err := gemini.GetEmbedding(body.TagName, c.Request().Context())
 			if err != nil {
 				return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("%+v", err))
@@ -53,7 +53,11 @@ func PostTag(c echo.Context) error {
 			if err != nil {
 				return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("%+v", err))
 			}
+		} else {
+			return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("%+v", err))
 		}
+	} else {
+		// do nothing
 	}
 
 	// エラーが起きなかったとき、正常なのでステータスコード 200 OK を返し、リクエストデータをそのまま返す
