@@ -8,11 +8,11 @@ import (
 )
 
 func GetTags(c echo.Context) error {
-	tagname,err := model.GetAllTagsName()
+	tagname, err := model.GetAllTagsName()
 	if err != nil {
-		return nil 
+		return nil
 	}
 
 	return c.JSON(http.StatusOK, tagname)
-	
+
 }
