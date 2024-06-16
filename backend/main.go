@@ -2,17 +2,14 @@ package main
 
 import (
 	"encoding/gob"
-
+	"golang.org/x/oauth2"
 	"net/http"
 
-	"golang.org/x/oauth2"
-
 	//"github.com/google/generative-ai-go/genai"
-	"os"
-
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/traP-jp/h24s_18/model"
+	"os"
 
 	"github.com/traP-jp/h24s_18/handler"
 	//"google.golang.org/api/option"
@@ -76,6 +73,8 @@ func main() {
 	e.GET("/api/oauth2/callback", handler.CallbackHandler)
 	e.GET("/api/me", handler.GetMeHandler)
 	e.PATCH("/api/me", handler.PatchMe)
+	e.GET("/api/tags", handler.GetTags)
+	e.GET("/api/users", handler.FindUserByTag)
 	e.POST("/api/me/tags", handler.PostTag)
 	e.PATCH("api/me/tags", handler.UpdateTag)
 	e.DELETE("/api/me/tags", handler.DeleteTag)

@@ -16,9 +16,9 @@ func CreateTag(name string, value string) error {
 	return result.Error
 }
 
-func GetTag(value string) (Tag, error) {
+func GetTag(name string) (Tag, error) {
 	var tag Tag
-	result := db.First(&tag, "value = ?", value)
+	result := db.First(&tag, "value = ?", name)
 	return tag, result.Error
 }
 

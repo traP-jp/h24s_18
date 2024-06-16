@@ -8,11 +8,20 @@ import (
 )
 
 func GetTags(c echo.Context) error {
-	tagname,err := model.GetAllTagsName()
+	tagname, err := model.GetAllTagsName()
 	if err != nil {
-		return nil 
+		return nil
 	}
 
 	return c.JSON(http.StatusOK, tagname)
-	
+
+}
+
+func FindUserByTag(c echo.Context) error {
+	q := c.QueryParam("q")
+	user, err := model.RecommendUserByTag(q)
+	if err != nil {
+		return err
+	}
+	return c.JSON(http.StatusOK, user)
 }
