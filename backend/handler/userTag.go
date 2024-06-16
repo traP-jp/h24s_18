@@ -50,13 +50,17 @@ func PostUserTag(c echo.Context) error {
 }
 
 func insertUserTag(u *traq.MyUserDetail, body PostTagRequest, c echo.Context) error {
+	if body.TagName == "" {
+		return c.String(http.StatusBadRequest, "tagname is blank") // http.StatusConflictがエラーの番号に該当する
+	}
+
 	err := model.CreateUserTag(u.Name, body.TagName, body.IsStarred)
 
 	if err != nil {
 		mysqlErr := err.(*mysql.MySQLError)
 		switch mysqlErr.Number {
 		case 1062:
-			return c.String(http.StatusConflict, "tab duplicate") // http.StatusConflictがエラーの番号に該当する
+			return c.String(http.StatusConflict, "tag duplicate") // http.StatusConflictがエラーの番号に該当する
 		}
 		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("%+v", err))
 	}
