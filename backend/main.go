@@ -77,10 +77,10 @@ func main() {
 	e.PATCH("/api/me", handler.PatchMe)
 	e.GET("/api/tags", handler.GetTags)
 	e.GET("/api/users", handler.FindUserByTag)
-	e.POST("/api/me/tags", handler.PostTag)
-	e.POST("/api/me/tags/bulk", handler.BulkInsertTags)
-	e.PATCH("api/me/tags", handler.UpdateTag)
-	e.DELETE("/api/me/tags/:tagName", handler.DeleteTag)
+	e.POST("/api/me/tags", handler.PostUserTag)
+	e.POST("/api/me/tags/bulk", handler.BulkInsertUserTags)
+	e.PATCH("api/me/tags", handler.UpdateUserTag)
+	e.DELETE("/api/me/tags/:tagName", handler.DeleteUserTag)
 
 	// Webサーバーをポート番号8080で起動し、エラーが発生した場合はログにエラーメッセージを出力する
 	e.Logger.Fatal(e.Start(":8080"))
