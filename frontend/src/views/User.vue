@@ -60,7 +60,7 @@ const isMyPage = computed(() => {
   return store.user.id === userId.value;
 });
 const xId = ref<string>("ayase_lab");
-const profileLinks = ref<any>([
+const profileLinks = computed(() => [
   {
     name: "x",
     url: `https://x.com/${xId.value}`,
