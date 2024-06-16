@@ -31,7 +31,6 @@ func PatchMe(c echo.Context) error {
 	return c.NoContent(http.StatusOK)
 }
 
-
 func GetMeHandler(c echo.Context) error {
 	//ログインしてたらuserが返ってくる
 	u, _, err := getMe(c)
@@ -59,7 +58,7 @@ func GetMeHandler(c echo.Context) error {
 		Bio:           user.Bio,
 		TwitterID:     user.TwitterId,
 		HomeChannelId: user.HomeChannelId,
-		Tag : tags,
+		Tag:           tags,
 	}
 
 	//データベースから帰ってきたのを出力
