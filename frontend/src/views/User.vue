@@ -80,11 +80,11 @@ const addTag = async () => {
   }
 };
 
-const updateTag = (tag: Tag) => {
+const updateTag = async (tag: Tag) => {
   const newTag: Tag = { name: tag.name, isStarred: !tag.isStarred };
   tags.value = tags.value.map((t) => (t.name === tag.name ? newTag : t));
   try {
-    fetch(`${API_URL}/api/me/tags/${tag.name}`, {
+    await fetch(`${API_URL}/api/me/tags`, {
       method: "PATCH",
       credentials: "include",
       headers: {
