@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/go-sql-driver/mysql"
 	"github.com/traP-jp/h24s_18/gemini"
 	"github.com/traPtitech/go-traq"
 	"gorm.io/gorm"
@@ -52,6 +53,11 @@ func insertUserTag(u *traq.MyUserDetail, body PostTagRequest, c echo.Context) er
 	err := model.CreateUserTag(u.Name, body.TagName, body.IsStarred)
 
 	if err != nil {
+		mysqlErr := err.(*mysql.MySQLError)
+		switch mysqlErr.Number {
+		case 1062:
+			return c.String(http.StatusConflict, "tab duplicate") // http.StatusConflictがエラーの番号に該当する
+		}
 		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("%+v", err))
 	}
 
