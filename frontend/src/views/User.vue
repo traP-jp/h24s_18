@@ -1,23 +1,48 @@
 <script setup lang="ts">
 import Tagbutton from "../components/Tagbutton.vue";
-import { ref, computed, watch } from "vue";
+import { ref, computed, watch, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import UserIcon from "../components/UserIcon.vue";
+import { API_URL } from "../store";
 
 //プロフィールデータ
 const route = useRoute();
-const biography = ref<string>("ここに自己紹介文が表示されます");
+const biography = ref<string>("");
 const editBiography = ref<string>("");
 const isEditing = ref<boolean>(false);
 const userId = ref<string>(route.params.id as string);
 const tags = ref<string[]>(["23M", "aaa", "ハッカソンなう"]);
 
 const newTag = ref("");
+const xId = ref<string>("");
+
+const getUserInfo = async () => {
+  const res = await fetch(`${API_URL}/api/users/${userId.value}`, {
+    method: "GET",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": API_URL,
+    },
+  });
+  if (!res.ok) {
+    throw new Error("Failed to fetch user info");
+  }
+  const data = await res.json();
+  biography.value = data.Bio;
+  xId.value = data.TwitterId;
+  console.log(data);
+};
+
+onMounted(() => {
+  getUserInfo();
+});
 
 watch(
   () => route.params.id,
   (newId: any) => {
     userId.value = newId as string;
+    getUserInfo();
   }
 );
 
@@ -30,9 +55,23 @@ const startEditing = () => {
   isEditing.value = true;
 };
 
-const saveBiography = () => {
-  biography.value = editBiography.value; //編集内容を保存
-  isEditing.value = false; //編集モードを終了
+const saveBiography = async () => {
+  try {
+    biography.value = editBiography.value; // 編集内容を保存
+    isEditing.value = false; // 編集モードを終了
+    await fetch(`${API_URL}/api/me`, {
+      method: "PATCH",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": API_URL,
+      },
+      body: JSON.stringify({ Bio: biography.value }),
+    });
+    console.log("Biography saved");
+  } catch (error) {
+    console.error("Failed to save biography:", error);
+  }
 };
 
 const cancelEditing = () => {
@@ -49,7 +88,6 @@ import { store } from "../store";
 const isMyPage = computed(() => {
   return store.user.id === userId.value;
 });
-const xId = ref<string>("ayase_lab");
 const profileLinks = computed(() => [
   {
     name: "x",
